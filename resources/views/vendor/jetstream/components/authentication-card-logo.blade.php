@@ -1,0 +1,1 @@
+<img src="{{ asset('https://i.pinimg.com/originals/dd/aa/49/ddaa49cddbe5779b9a3ddd81855c8161.png') }}" alt="Just_Monika" style="height: auto; width: 450px; margin-right: 27px;">
