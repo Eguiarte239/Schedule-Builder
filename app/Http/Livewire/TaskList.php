@@ -68,11 +68,6 @@ class TaskList extends Component
 
     public function getTasksProperty()
     {
-        //return Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-        /*$assignedTasks = Auth::user()->assignedTasks()->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-        $userTasks = Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-
-        return $assignedTasks->merge($userTasks);*/
         return Task::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
                   ->orWhereJsonContains('assigned_to', Auth::user()->id);
@@ -133,6 +128,8 @@ class TaskList extends Component
             Storage::disk('public')->makeDirectory('images');
         }
 
+        User::find(intval($this->assigned_to))->assignRole('leader-user');;
+
         $this->task = new Task();
         $this->task->user_id = Auth::user()->id;
         $this->task->title = $this->title;
@@ -158,7 +155,6 @@ class TaskList extends Component
         $this->task->assigned_to = $this->assigned_to;
         $this->task->save();
         $this->openModal = false;
-
         return redirect()->route('notes.index');
     }
 

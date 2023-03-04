@@ -40,7 +40,7 @@
                                         @endif
                                     </div>    
                                     <div>
-                                        @can('assign-to-user')
+                                        @can('assign-leader')
                                             <button wire:click="editNote({{ $task->id }})">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -170,7 +170,7 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            @can('assign-to-user')
+            @can('assign-leader')
                 <div class="mb-4">
                     <label for="assigned_to" class="block mb-2 text-sm font-medium text-gray-900">
                         Users
