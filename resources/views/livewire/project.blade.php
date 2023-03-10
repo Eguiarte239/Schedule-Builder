@@ -1,16 +1,11 @@
 <div>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 ">
-            To Do App
-        </h2>
-    </x-slot>
-
+    @extends('layouts.sidenav')
     <div class="py-12 dark:bg-slate-800">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-slate-400 overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <div>
                     <x-jet-button wire:click="newNote" class="mb-4">
-                        + New task
+                        + New project
                     </x-jet-button>
                 </div>
 
@@ -25,14 +20,14 @@
                 </div>
 
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
-                    @foreach ($tasks as $task)
-                        <div wire:sortable.item="{{ $task->id }}" wire:key="task-{{ $task->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
+                    @foreach ($projects as $project)
+                        <div wire:sortable.item="{{ $project->id }}" wire:key="project-{{ $project->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
                             <div class="px-2" wire:sortable.handle>
                                 <div class="flex flex-row justify-between">
                                     <div class="font-bold text-xl dark:text-white mb-2" >
-                                        {{ $task->title }}
-                                        @if(!empty($task->image))
-                                            @foreach (json_decode(Crypt::decrypt($task->image)) as $image)
+                                        {{ $project->title }}
+                                        @if(!empty($project->image))
+                                            @foreach (json_decode(Crypt::decrypt($project->image)) as $image)
                                                 <img src="{{ $image }}" alt="Image"  class="object-cover w-48 py-5">
                                             @endforeach                                               
                                         @else
@@ -41,7 +36,7 @@
                                     </div>    
                                     <div>
                                         @can('assign-leader')
-                                            <button wire:click="editNote({{ $task->id }})">
+                                            <button wire:click="editNote({{ $project->id }})">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                                     class="w-6 h-6 dark:stroke-white">
@@ -50,37 +45,31 @@
                                                 </svg>
                                             </button>
                                         @endcan
-                                        <button>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 dark:stroke-white">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>                                              
-                                        </button>
                                     </div>
                                 </div>
                                     <p class="mb-3 font-normal text-gray-700 dark:text-white">
-                                        {{ $task->content }}
+                                        {{ $project->content }}
                                     <br>
                                     <span class="bg-blue-100 text-blue-800 text-ms font-medium inline-flex px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
                                         <svg aria-hidden="true" class="w-4 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                                        Estimated hours: {{ $task->hour_estimate }}
+                                        Estimated hours: {{ $project->hour_estimate }}
                                     </span>
                                     <br>
-                                    @if ($task->priority == 'Low')
+                                    @if ($project->priority == 'Low')
                                         <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                                            {{ $task->priority }}
+                                            {{ $project->priority }}
                                         </span>
-                                    @elseif ($task->priority == 'Medium')
+                                    @elseif ($project->priority == 'Medium')
                                         <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                                            {{ $task->priority }}
+                                            {{ $project->priority }}
                                         </span>
-                                    @elseif ($task->priority == 'High')
+                                    @elseif ($project->priority == 'High')
                                         <span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-orange-900 dark:text-yellow-300">
-                                            {{ $task->priority }}
+                                            {{ $project->priority }}
                                         </span>
                                     @else
                                         <span class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                                            {{ $task->priority }}
+                                            {{ $project->priority }}
                                         </span>
                                     @endif
                                     
@@ -93,7 +82,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                {{ $task->start_task }}
+                                {{ $project->start_task }}
                             </span>
                             <span
                                 class="flex flex-row bg-red-200 rounded-lg px-3 py-1 text-sm font-semibold text-red-800 mr-2 mt-2">
@@ -102,7 +91,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                {{ $task->end_task }}
+                                {{ $project->end_task }}
                             </span>
                         </div>
                     @endforeach
@@ -115,7 +104,7 @@
     {{-- New note modal --}}
     <x-jet-dialog-modal wire:model="openModal">
         <x-slot name="title">
-            Add new note
+            Add new project
         </x-slot>
 
         <x-slot name="content">
@@ -205,15 +194,15 @@
             @if ($editTask)
                 <x-jet-secondary-button
                     class="ml-3 bg-red-500 text-white hover:text-white hover:bg-red-700 active:bg-red-50"
-                    wire:loading.attr="disabled" wire:click="deleteTask({{ $this->task->id }})">
+                    wire:loading.attr="disabled" wire:click="deleteTask({{ $this->project->id }})">
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
-                <x-jet-button class="ml-3" wire:click="editTask({{ $this->task->id }})" wire:loading.attr="disabled" wire:target="save, image">
-                    Save task
+                <x-jet-button class="ml-3" wire:click="editTask({{ $this->project->id }})" wire:loading.attr="disabled" wire:target="save, image">
+                    Save project
                 </x-jet-button>
             @else
                 <x-jet-button class="ml-3" wire:click="saveTask" wire:loading.attr="disabled" wire:target="save, image">
-                    Save task
+                    Save project
                 </x-jet-button>
             @endif
         </x-slot>

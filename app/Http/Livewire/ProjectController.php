@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Task;
+use App\Models\Project;
 use App\Models\User;
 use App\Rules\UniqueTitleForUser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithPagination;
 
-class TaskList extends Component
+class ProjectController extends Component
 {
     use WithFileUploads, AuthorizesRequests, WithPagination;
 
     protected $middleware = ['web', 'livewire:protect'];
 
-    public $task;
+    public $project;
     public $openModal = false;
     public $editTask = false;
 
@@ -66,9 +66,9 @@ class TaskList extends Component
         $this->rules = $this->rules();
     }
 
-    public function getTasksProperty()
+    public function getProjectsProperty()
     {
-        return Task::where(function ($query) {
+        return Project::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
                   ->orWhereJsonContains('assigned_to', Auth::user()->id);
         })
@@ -79,25 +79,25 @@ class TaskList extends Component
 
     public function render()
     {
-        $tasks = $this->tasks;
+        $projects = $this->projects;
         $users = User::all();
-        return view('livewire.task-list', ['tasks' => $tasks, 'users' => $users])->layout('layouts.app');
+        return view('livewire.project', ['projects' => $projects, 'users' => $users])->layout('layouts.app');
     }
 
     public function setValues($id)
     {
-        $this->task = Task::find($id);
-        $this->title = $this->task->title;
-        $this->start_time = $this->task->start_time;
-        $this->end_time = $this->task->end_time;
-        $this->hour_estimate = $this->task->hour_estimate;
-        $this->content = $this->task->content;
-        $this->priority = $this->task->priority;
+        $this->project = Project::find($id);
+        $this->title = $this->project->title;
+        $this->start_time = $this->project->start_time;
+        $this->end_time = $this->project->end_time;
+        $this->hour_estimate = $this->project->hour_estimate;
+        $this->content = $this->project->content;
+        $this->priority = $this->project->priority;
     }
 
     public function resetValues()
     {
-        $this->task = new Task();
+        $this->project = new Project();
         $this->title = "";
         $this->start_time = now()->format('Y-m-d');
         $this->end_time = "";
@@ -128,16 +128,18 @@ class TaskList extends Component
             Storage::disk('public')->makeDirectory('images');
         }
 
-        User::find(intval($this->assigned_to))->assignRole('leader-user');;
+        if(isset($this->assigned_to)){
+            User::find(intval($this->assigned_to))->assignRole('leader-user');
+        }
 
-        $this->task = new Task();
-        $this->task->user_id = Auth::user()->id;
-        $this->task->title = $this->title;
-        $this->task->start_time = $this->start_time;
-        $this->task->end_time = $this->end_time;
-        $this->task->hour_estimate = $this->hour_estimate;
-        $this->task->content = $this->content;
-        $this->task->priority = $this->priority;
+        $this->project = new Project();
+        $this->project->user_id = Auth::user()->id;
+        $this->project->title = $this->title;
+        $this->project->start_time = $this->start_time;
+        $this->project->end_time = $this->end_time;
+        $this->project->hour_estimate = $this->hour_estimate;
+        $this->project->content = $this->content;
+        $this->project->priority = $this->priority;
         if(!empty($this->image)){
             foreach ($this->image as $image) {
                 $name =  $image->getClientOriginalName();
@@ -147,29 +149,29 @@ class TaskList extends Component
                 })->encode('jpg')->save($route);
                 $urls[] = '/storage/images/'.$name;
             }
-            $this->task->image = Crypt::encrypt(json_encode($urls));
+            $this->project->image = Crypt::encrypt(json_encode($urls));
         }
         else{
-            $this->task->image = null;
+            $this->project->image = null;
         }
-        $this->task->assigned_to = $this->assigned_to;
-        $this->task->save();
+        $this->project->assigned_to = $this->assigned_to;
+        $this->project->save();
         $this->openModal = false;
-        return redirect()->route('notes.index');
+        return redirect()->route('projects');
     }
 
     public function editTask($id)
     {
         $this->validate();
 
-        $this->task = Task::find($id);
-        $this->task->user_id = Auth::user()->id;
-        $this->task->title = $this->title;
-        $this->task->start_time = $this->start_time;
-        $this->task->end_time = $this->end_time;
-        $this->task->hour_estimate = $this->hour_estimate;
-        $this->task->content = $this->content;
-        $this->task->priority = $this->priority;
+        $this->project = Project::find($id);
+        $this->project->user_id = Auth::user()->id;
+        $this->project->title = $this->title;
+        $this->project->start_time = $this->start_time;
+        $this->project->end_time = $this->end_time;
+        $this->project->hour_estimate = $this->hour_estimate;
+        $this->project->content = $this->content;
+        $this->project->priority = $this->priority;
         if(!empty($this->image)){
             foreach ($this->image as $image) {
                 $name =  $image->getClientOriginalName();
@@ -179,29 +181,29 @@ class TaskList extends Component
                 })->encode('jpg')->save($route);
                 $urls[] = '/storage/images/'.$name;
             }
-            $this->task->image = Crypt::encrypt(json_encode($urls));
+            $this->project->image = Crypt::encrypt(json_encode($urls));
         }
         else{
-            $this->task->image = null;
+            $this->project->image = null;
         }
-        $this->task->save();
+        $this->project->save();
         $this->openModal = false;
     }
 
     public function deleteTask($id)
     {
-        Task::destroy($id);
+        Project::destroy($id);
         $this->openModal = false;
-        return redirect()->route('notes.index');
+        return redirect()->route('projects');
     }
 
     public function updateTaskOrder($items)
     {
         foreach($items as $item)
         {
-            $task = Task::find($item['value']);
-            $task->order_position = $item['order'];
-            $task->save();
+            $project = Project::find($item['value']);
+            $project->order_position = $item['order'];
+            $project->save();
         }
     }
 }

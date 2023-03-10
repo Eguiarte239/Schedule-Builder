@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Livewire\TaskList;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Livewire\PhaseController;
+use App\Http\Livewire\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/', TaskList::class)->name('notes.index');
+    Route::get('/', ProjectController::class)->name('projects');
+    Route::get('/phase', PhaseController::class)->name('phases');
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');

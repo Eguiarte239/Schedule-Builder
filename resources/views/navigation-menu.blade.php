@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="container flex flex-wrap items-center justify-between mx-auto">
-                    <a class="flex items-center" href="{{ route('notes.index') }}">
+                    <a class="flex items-center" href="{{ route('projects') }}">
                         <x-jet-application-mark class="h-6 mr-3 sm:h-10" />
                         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Todo App</span>
                     </a>
