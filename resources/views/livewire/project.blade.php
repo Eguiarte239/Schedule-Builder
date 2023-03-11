@@ -1,13 +1,14 @@
 <div>
-    @extends('layouts.sidenav')
     <div class="py-12 dark:bg-slate-800">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-slate-400 overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div>
-                    <x-jet-button wire:click="newNote" class="mb-4">
-                        + New project
-                    </x-jet-button>
-                </div>
+                @can('assign-leader')
+                    <div>
+                        <x-jet-button wire:click="newNote" class="mb-4">
+                            + New project
+                        </x-jet-button>
+                    </div>
+                @endcan
 
                 <div class="flex items-center mb-4">   
                     <label for="simple-search" class="sr-only">Search</label>
@@ -101,6 +102,7 @@
         </div>
     </div>
 
+    @can('assign-leader')
     {{-- New note modal --}}
     <x-jet-dialog-modal wire:model="openModal">
         <x-slot name="title">
@@ -159,22 +161,20 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            @can('assign-leader')
-                <div class="mb-4">
-                    <label for="assigned_to" class="block mb-2 text-sm font-medium text-gray-900">
-                        Users
-                    </label>
-                    <select name="assigned_to" id="assigned_to"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="assigned_to">
-                        <option value="" hidden selected></option>
-                        @foreach ($users as $user)
-                            @if ($user->auth()->id !== $user->id)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    <x-jet-input-error for="assigned_to"></x-jet-input-error>
-                </div>
-            @endcan
+            <div class="mb-4">
+                <label for="leader_id_assigned" class="block mb-2 text-sm font-medium text-gray-900">
+                    Users
+                </label>
+                <select name="leader_id_assigned" id="leader_id_assigned"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader_id_assigned">
+                    <option value="" hidden selected></option>
+                    @foreach ($users as $user)
+                        @if ($user->auth()->id !== $user->id)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <x-jet-input-error for="leader_id_assigned"></x-jet-input-error>
+            </div>
             <input type="file" wire:model="image" multiple value="">
             <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
@@ -207,6 +207,7 @@
             @endif
         </x-slot>
     </x-jet-dialog-modal>
+    @endcan
 
     @push('js')
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>

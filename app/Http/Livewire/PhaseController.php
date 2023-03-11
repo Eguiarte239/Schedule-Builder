@@ -41,8 +41,8 @@ class PhaseController extends Component
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'assigned_to_project' => 'nullable',
-            'assigned_to_project.*' => 'nullable|exists:projects,id',
+            'assigned_to_project' => 'required',
+            'assigned_to_project.*' => 'required|exists:projects,id',
         ];
         
         return $rules;
@@ -66,8 +66,9 @@ class PhaseController extends Component
 
     public function render()
     {
+        //$role = Role::where('name', 'admin-user')->first();
         $phases = $this->phases;
-        $projects = Project::all();
+        $projects = Project::all()->where('leader_id_assigned', Auth::user()->id);
         return view('livewire.phase', ['phases' => $phases, 'projects' => $projects])->layout('layouts.app');
     }
 

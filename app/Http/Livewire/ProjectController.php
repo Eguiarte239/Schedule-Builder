@@ -32,7 +32,7 @@ class ProjectController extends Component
     public $content;
     public $image;
     public $priority;
-    public $assigned_to;
+    public $leader_id_assigned;
     
     public $urls = [];
     public $path;
@@ -52,8 +52,8 @@ class ProjectController extends Component
             "content" => ['required', 'string', 'max:500'],
             "image.*" => ['nullable', 'mimes:jpeg,png,gif', 'max:2048'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'assigned_to' => 'nullable',
-            'assigned_to.*' => 'nullable|exists:users,id',
+            'leader_id_assigned' => 'required',
+            'leader_id_assigned.*' => 'required|exists:users,id',
         ];
         
         return $rules;
@@ -70,7 +70,7 @@ class ProjectController extends Component
     {
         return Project::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
-                  ->orWhereJsonContains('assigned_to', Auth::user()->id);
+                  ->orWhereJsonContains('leader_id_assigned', Auth::user()->id);
         })
         ->where('title', 'like', '%'.$this->search.'%')
         ->orderBy('order_position', 'asc')
@@ -128,8 +128,8 @@ class ProjectController extends Component
             Storage::disk('public')->makeDirectory('images');
         }
 
-        if(isset($this->assigned_to)){
-            User::find(intval($this->assigned_to))->assignRole('leader-user');
+        if(isset($this->leader_id_assigned)){
+            User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
         }
 
         $this->project = new Project();
@@ -154,7 +154,7 @@ class ProjectController extends Component
         else{
             $this->project->image = null;
         }
-        $this->project->assigned_to = $this->assigned_to;
+        $this->project->leader_id_assigned = $this->leader_id_assigned;
         $this->project->save();
         $this->openModal = false;
         return redirect()->route('projects');

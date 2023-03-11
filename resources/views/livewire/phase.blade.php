@@ -1,16 +1,17 @@
 <div>
-    @extends('layouts.sidenav')
     <div class="py-12 dark:bg-slate-800">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-slate-400 overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div>
-                    <x-jet-button wire:click="newPhase" class="mb-4">
-                        + New phase
-                    </x-jet-button>
-                </div>
-
+                @can('assign-employee')
+                    <div>
+                        <x-jet-button wire:click="newPhase" class="mb-4">
+                            + New phase
+                        </x-jet-button>
+                    </div>
+                @endcan
+                
                 <div class="flex items-center mb-4">   
-                    <label for="simple-search" class="sr-only">Search</label>
+                    {{--<label for="simple-search" class="sr-only">Search</label>--}}
                     <div class="relative w-full">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
@@ -27,10 +28,10 @@
                                 <div class="px-2" wire:sortable.handle>
                                     <div class="flex flex-row justify-between">
                                         <div class="font-bold text-xl dark:text-white mb-2" >
-                                            {{ $phase->title }} - {{ $phase->project->title }}
+                                            Project: {{ $phase->project->title }} - Phase: {{ $phase->title }}
                                         </div> 
                                         <div>
-                                            @can('assign-leader')
+                                            @can('assign-employee')
                                                 <button wire:click="editPhaseNote({{ $phase->id }})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -116,7 +117,7 @@
                     <label for="priority" class="block mb-2 text-sm font-medium text-gray-900">
                         Priority
                     </label>
-                    <select name="priority" id="priority"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="priority">
+                    <select name="priority" id="priority" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="priority">
                         <option value="" hidden selected></option>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
@@ -153,12 +154,12 @@
                     <x-jet-input-error for="hour_estimate"></x-jet-input-error>
                 </div>
             </div>
-            @can('assign-leader')
+            @can('assign-employee')
                 <div class="mb-4">
                     <label for="assigned_to_project" class="block mb-2 text-sm font-medium text-gray-900">
-                        Users
+                        Projects
                     </label>
-                    <select name="assigned_to_project" id="assigned_t_project"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="assigned_to_project">
+                    <select name="assigned_to_project" id="assigned_to_project" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="assigned_to_project">
                         <option value="" hidden selected></option>
                         @foreach ($projects as $project)
                             <option value="{{ $project->id }}">{{ $project->title }}</option>

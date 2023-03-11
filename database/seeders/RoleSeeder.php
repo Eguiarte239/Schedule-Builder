@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
     {
         $adminUser = Role::create(['name' => 'admin-user']);
         $projectLeaderUser = Role::create(['name' => 'leader-user']);
+        $employeeUser = Role::create(['name' => 'employee-user']);
         $jetstreamUser = Role::create(['name' => 'jetstream-user']);
         $googleUser = Role::create(['name' => 'google-user']);
 
@@ -29,5 +30,7 @@ class RoleSeeder extends Seeder
 
         $assignUsersToTask = Permission::create(['name' => 'assign-employee']);
         $assignUsersToTask->assignRole($projectLeaderUser);
+        $finishTask = Permission::create(['name' => 'task-finished']);
+        $finishTask->assignRole($employeeUser);
     }
 }

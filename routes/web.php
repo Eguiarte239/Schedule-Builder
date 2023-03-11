@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Livewire\PhaseController;
 use App\Http\Livewire\ProjectController;
+use App\Http\Livewire\TaskList;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', ProjectController::class)->name('projects');
     Route::get('/phase', PhaseController::class)->name('phases');
+    Route::get('/task', TaskList::class)->name('tasks');
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');

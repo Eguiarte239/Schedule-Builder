@@ -43,6 +43,11 @@ class Phase extends Model
         return $this->belongsTo(Project::class, 'assigned_to_project');
     }
 
+    public function task()
+    {
+        return $this->belongsToMany(Task::class);
+    }
+
     /**
      * Return a string representation of the start time of a task.
      *
