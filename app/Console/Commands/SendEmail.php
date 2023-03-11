@@ -6,7 +6,6 @@ use App\Mail\TaskReminder;
 use App\Models\Task;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 
 class SendEmail extends Command

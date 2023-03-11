@@ -29,15 +29,9 @@ Route::middleware([
     Route::get('/', ProjectController::class)->name('projects');
     Route::get('/phase', PhaseController::class)->name('phases');
     Route::get('/task', TaskList::class)->name('tasks');
-    /*Route::get('/task-reminder', function (){
-        $tasks = Task::all();
-        foreach($tasks as $task){
-            if(Carbon::parse($task->end_time)->diffInDays(Carbon::now()) == 2){
-                Mail::to($task->user->email)->send(new TaskReminder);
-            }
-        }
-        return "Mensaje envíado";
-    })->name('task-reminder');*/
+    Route::get('/task-reminder', function (){
+        return view('mails.task-reminder');
+    })->name('task-reminder');
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
