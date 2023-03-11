@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to_project');
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('assigned_to_project')->references('id')->on('projects')->onDelete('set null');
+            $table->foreign('assigned_to_project')->references('id')->on('projects');
         });
     }
 

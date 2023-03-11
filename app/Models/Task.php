@@ -35,7 +35,7 @@ class Task extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class, 'task_user');
+        return $this->belongsTo(User::class, 'assigned_to_task');
     }
 
     /**
@@ -58,8 +58,4 @@ class Task extends Model
         return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
     }
 
-    public function assignedTasks()
-    {
-        return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id')->withTimestamps();
-    }
 }

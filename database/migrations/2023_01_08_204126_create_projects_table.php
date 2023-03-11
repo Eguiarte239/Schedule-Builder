@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('leader_id_assigned')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('leader_id_assigned')->references('id')->on('users');
         });
     }
 

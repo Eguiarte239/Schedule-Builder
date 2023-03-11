@@ -42,7 +42,7 @@ class Project extends Model
      */
     public function user()
     {
-        return $this->belongsToMany(User::class, 'task_user');
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function phase()
@@ -68,10 +68,5 @@ class Project extends Model
     public function getEndTaskAttribute()
     {
         return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
-    }
-
-    public function assignedTasks()
-    {
-        return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id')->withTimestamps();
     }
 }

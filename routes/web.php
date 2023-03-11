@@ -5,6 +5,10 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Livewire\PhaseController;
 use App\Http\Livewire\ProjectController;
 use App\Http\Livewire\TaskList;
+use App\Mail\TaskReminder;
+use App\Models\Task;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +29,16 @@ Route::middleware([
     Route::get('/', ProjectController::class)->name('projects');
     Route::get('/phase', PhaseController::class)->name('phases');
     Route::get('/task', TaskList::class)->name('tasks');
+    /*Route::get('/task-reminder', function (){
+        $tasks = Task::all();
+        foreach($tasks as $task){
+            if(Carbon::parse($task->end_time)->diffInDays(Carbon::now()) == 2){
+                Mail::to($task->user->email)->send(new TaskReminder);
+            }
+        }
+        return "Mensaje envíado";
+    })->name('task-reminder');*/
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
-Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback'); 
+Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');

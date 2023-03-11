@@ -26,8 +26,8 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to_task');
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('assigned_to_phase')->references('id')->on('phases')->onDelete('set null');
-            $table->foreign('assigned_to_task')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('assigned_to_phase')->references('id')->on('phases');
+            $table->foreign('assigned_to_task')->references('id')->on('users');
         });
     }
 
