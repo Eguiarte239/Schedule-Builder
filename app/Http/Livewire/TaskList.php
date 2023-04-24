@@ -2,22 +2,19 @@
 
 namespace App\Http\Livewire;
 
+use App\Mail\TaskReminder;
+use App\Models\Phase;
 use App\Models\Task;
 use App\Models\User;
-use App\Rules\UniqueTitleForUser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
-use Livewire\WithFileUploads;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Livewire\WithPagination;
 
 class TaskList extends Component
 {
-    use WithFileUploads, AuthorizesRequests, WithPagination;
+    use AuthorizesRequests, WithPagination;
 
     protected $middleware = ['web', 'livewire:protect'];
 
@@ -30,12 +27,10 @@ class TaskList extends Component
     public $end_time;
     public $hour_estimate;
     public $content;
-    public $image;
     public $priority;
-    public $assigned_to;
-    
-    public $urls = [];
-    public $path;
+    public $assigned_to_phase;
+    public $assigned_to_task;
+    public $predecessor_task;
 
     public $search = '';
 
@@ -45,15 +40,18 @@ class TaskList extends Component
     protected function rules()
     {
         $rules = [
-            "title" => ['required', 'string', 'max:255', new UniqueTitleForUser],
+            "title" => ['required', 'string', 'max:255'],
             "start_time" => ['required', 'date', 'after_or_equal:today'],
             "end_time" => ['required', 'date', 'after_or_equal:start_time'],
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
-            "image.*" => ['nullable', 'mimes:jpeg,png,gif', 'max:2048'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'assigned_to' => 'nullable',
-            'assigned_to.*' => 'nullable|exists:users,id',
+            'assigned_to_phase' => 'required',
+            'assigned_to_phase.*' => 'required|exists:phases,id',
+            'assigned_to_task' => 'required',
+            'assigned_to_task.*' => 'required|exists:users,id',
+            'assigned_to_task' => 'required',
+            'predecessor_task.*' => 'nullable|exists:tasks,id',
         ];
         
         return $rules;
@@ -62,20 +60,14 @@ class TaskList extends Component
     protected $rules = [];
 
     public function mount(){
-        $this->path = public_path('/images');
         $this->rules = $this->rules();
     }
 
     public function getTasksProperty()
     {
-        //return Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-        /*$assignedTasks = Auth::user()->assignedTasks()->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-        $userTasks = Task::where('user_id', Auth::user()->id)->where('title', 'like', '%'.$this->search.'%')->orderBy('order_position', 'asc')->get();
-
-        return $assignedTasks->merge($userTasks);*/
         return Task::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
-                  ->orWhereJsonContains('assigned_to', Auth::user()->id);
+                    ->orWhereJsonContains('assigned_to_task', Auth::user()->id);
         })
         ->where('title', 'like', '%'.$this->search.'%')
         ->orderBy('order_position', 'asc')
@@ -85,8 +77,10 @@ class TaskList extends Component
     public function render()
     {
         $tasks = $this->tasks;
+        $phases = Phase::where('user_id', Auth::user()->id)->get();
         $users = User::all();
-        return view('livewire.task-list', ['tasks' => $tasks, 'users' => $users])->layout('layouts.app');
+        $taskCollection = Task::all();
+        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users, 'taskCollection' => $taskCollection])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -111,7 +105,7 @@ class TaskList extends Component
         $this->priority = null;
     }
 
-    public function newNote()
+    public function newTask()
     {
         $this->resetValues();
         $this->resetValidation();
@@ -119,7 +113,7 @@ class TaskList extends Component
         $this->openModal = true;
     }
 
-    public function editNote($id)
+    public function editTaskNote($id)
     {
         $this->setValues($id);
         $this->editTask = true;
@@ -129,8 +123,9 @@ class TaskList extends Component
     public function saveTask()
     {
         $this->validate();
-        if(!File::exists($this->path)) {
-            Storage::disk('public')->makeDirectory('images');
+
+        if(isset($this->assigned_to_task)){
+            User::find(intval($this->assigned_to_task))->assignRole('employee-user');
         }
 
         $this->task = new Task();
@@ -141,25 +136,12 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        if(!empty($this->image)){
-            foreach ($this->image as $image) {
-                $name =  $image->getClientOriginalName();
-                $route = storage_path().'\app\public\images/'.$name;
-                Image::make($image)->resize(1200, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode('jpg')->save($route);
-                $urls[] = '/storage/images/'.$name;
-            }
-            $this->task->image = Crypt::encrypt(json_encode($urls));
-        }
-        else{
-            $this->task->image = null;
-        }
-        $this->task->assigned_to = $this->assigned_to;
+        $this->task->assigned_to_phase = $this->assigned_to_phase;
+        $this->task->assigned_to_task = $this->assigned_to_task;
+        $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
         $this->openModal = false;
-
-        return redirect()->route('notes.index');
+        return redirect()->route('tasks');
     }
 
     public function editTask($id)
@@ -174,20 +156,6 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        if(!empty($this->image)){
-            foreach ($this->image as $image) {
-                $name =  $image->getClientOriginalName();
-                $route = storage_path().'\app\public\images/'.$name;
-                Image::make($image)->resize(1200, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode('jpg')->save($route);
-                $urls[] = '/storage/images/'.$name;
-            }
-            $this->task->image = Crypt::encrypt(json_encode($urls));
-        }
-        else{
-            $this->task->image = null;
-        }
         $this->task->save();
         $this->openModal = false;
     }
@@ -196,7 +164,17 @@ class TaskList extends Component
     {
         Task::destroy($id);
         $this->openModal = false;
-        return redirect()->route('notes.index');
+        return redirect()->route('phases');
+    }
+
+    public function finishTask($id)
+    {
+        $this->task = Task::find($id);
+        $this->task->is_finished = !$this->task->is_finished;
+        $this->task->save();
+        //condicional
+        $taskLeader = User::find($this->task->user_id);
+        //Mail::to($taskLeader->email)->queue(new TaskReminder);
     }
 
     public function updateTaskOrder($items)

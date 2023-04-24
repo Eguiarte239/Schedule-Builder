@@ -21,12 +21,16 @@ return new class extends Migration
             $table->float('hour_estimate');
             $table->date('start_time');
             $table->date('end_time');
-            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->nullable();
-            $table->unsignedBigInteger('assigned_to')->nullable();
-            $table->string('image')->nullable();
+            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
+            $table->unsignedBigInteger('assigned_to_phase');
+            $table->unsignedBigInteger('assigned_to_task');
+            $table->unsignedBigInteger('predecessor_task')->nullable();
+            $table->boolean('is_finished')->default(false);
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('assigned_to')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('assigned_to_phase')->references('id')->on('phases');
+            $table->foreign('assigned_to_task')->references('id')->on('users');
+            $table->foreign('predecessor_task')->references('id')->on('tasks');
         });
     }
 

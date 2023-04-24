@@ -3,15 +3,21 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
-class Task extends Model
+class Project extends Model
 {
     use HasFactory, LogsActivity;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'user_id',
         'title',
@@ -19,6 +25,7 @@ class Task extends Model
         'hour_estimate',
         'start_time',
         'end_time',
+        'image',
         'priority',
     ];
 
@@ -28,14 +35,19 @@ class Task extends Model
         ->logFillable();
     }
 
-    public function phase()
-    {
-        return $this->belongsTo(Phase::class, 'assigned_to_phase');
-    }
-
+    /**
+     * Get the user that owns the task
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to_task');
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function phase()
+    {
+        return $this->belongsToMany(Phase::class);
     }
 
     /**
@@ -57,5 +69,4 @@ class Task extends Model
     {
         return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
     }
-
 }

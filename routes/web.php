@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Livewire\TaskList;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Livewire\PhaseController;
+use App\Http\Livewire\ProjectController;
+use App\Http\Livewire\TaskList;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +22,13 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/', TaskList::class)->name('notes.index');
+    Route::get('/', ProjectController::class)->name('projects');
+    Route::get('/phase', PhaseController::class)->name('phases');
+    Route::get('/task', TaskList::class)->name('tasks');
+    Route::get('/task-reminder', function (){
+        return view('mails.task-reminder');
+    })->name('task-reminder');
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
-Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback'); 
+Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');

@@ -21,6 +21,7 @@
         <x-jet-banner />
 
         <div class="min-h-screen bg-gray-100 dark:bg-slate-800">
+            
             @livewire('navigation-menu')
 
             <!-- Page Content -->

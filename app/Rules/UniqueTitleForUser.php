@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Task;
+use App\Models\Project;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +28,7 @@ class UniqueTitleForUser implements Rule
     public function passes($attribute, $value)
     {
         $user = Auth::user();
-        $existingTask = Task::where('user_id', $user->id)
+        $existingTask = Project::where('user_id', $user->id)
                             ->where('title', $value)
                             ->first();
 
