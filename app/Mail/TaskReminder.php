@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Markdown;
 use Illuminate\Queue\SerializesModels;
 
 class TaskReminder extends Mailable
@@ -18,7 +19,7 @@ class TaskReminder extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public $task)
     {
         //
     }
@@ -42,8 +43,14 @@ class TaskReminder extends Mailable
      */
     public function content()
     {
+        /*return Cache::remember('mails.task-reminder', 60, function () {
+            return new Content(
+                view: 'mails.task-reminder',
+            );
+        });*/
+
         return new Content(
-            view: 'mails.task-reminder',
+            view: 'mails.task-reminder'
         );
     }
 

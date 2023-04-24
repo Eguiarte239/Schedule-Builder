@@ -5,10 +5,6 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Livewire\PhaseController;
 use App\Http\Livewire\ProjectController;
 use App\Http\Livewire\TaskList;
-use App\Mail\TaskReminder;
-use App\Models\Task;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------

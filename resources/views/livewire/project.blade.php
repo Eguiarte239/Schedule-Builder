@@ -27,13 +27,6 @@
                                 <div class="flex flex-row justify-between">
                                     <div class="font-bold text-xl dark:text-white mb-2" >
                                         {{ $project->title }}
-                                        @if(!empty($project->image))
-                                            @foreach (json_decode(Crypt::decrypt($project->image)) as $image)
-                                                <img src="{{ $image }}" alt="Image"  class="object-cover w-48 py-5">
-                                            @endforeach                                               
-                                        @else
-                                            <p>No image</p>
-                                        @endif
                                     </div>    
                                     <div>
                                         @can('assign-leader')
@@ -175,8 +168,6 @@
                 </select>
                 <x-jet-input-error for="leader_id_assigned"></x-jet-input-error>
             </div>
-            <input type="file" wire:model="image" multiple value="">
-            <x-jet-input-error for="image"></x-jet-input-error>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
                 </label>
@@ -197,11 +188,11 @@
                     wire:loading.attr="disabled" wire:click="deleteTask({{ $this->project->id }})">
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
-                <x-jet-button class="ml-3" wire:click="editTask({{ $this->project->id }})" wire:loading.attr="disabled" wire:target="save, image">
+                <x-jet-button class="ml-3" wire:click="editTask({{ $this->project->id }})">
                     Save project
                 </x-jet-button>
             @else
-                <x-jet-button class="ml-3" wire:click="saveTask" wire:loading.attr="disabled" wire:target="save, image">
+                <x-jet-button class="ml-3" wire:click="saveTask">
                     Save project
                 </x-jet-button>
             @endif

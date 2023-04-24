@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire;
 
+use App\Mail\TaskReminder;
 use App\Models\Phase;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,6 +30,7 @@ class TaskList extends Component
     public $priority;
     public $assigned_to_phase;
     public $assigned_to_task;
+    public $predecessor_task;
 
     public $search = '';
 
@@ -47,6 +50,8 @@ class TaskList extends Component
             'assigned_to_phase.*' => 'required|exists:phases,id',
             'assigned_to_task' => 'required',
             'assigned_to_task.*' => 'required|exists:users,id',
+            'assigned_to_task' => 'required',
+            'predecessor_task.*' => 'nullable|exists:tasks,id',
         ];
         
         return $rules;
@@ -74,7 +79,8 @@ class TaskList extends Component
         $tasks = $this->tasks;
         $phases = Phase::where('user_id', Auth::user()->id)->get();
         $users = User::all();
-        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users])->layout('layouts.app');
+        $taskCollection = Task::all();
+        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users, 'taskCollection' => $taskCollection])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -132,9 +138,10 @@ class TaskList extends Component
         $this->task->priority = $this->priority;
         $this->task->assigned_to_phase = $this->assigned_to_phase;
         $this->task->assigned_to_task = $this->assigned_to_task;
+        $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
         $this->openModal = false;
-        return redirect()->route('phases');
+        return redirect()->route('tasks');
     }
 
     public function editTask($id)
@@ -158,6 +165,16 @@ class TaskList extends Component
         Task::destroy($id);
         $this->openModal = false;
         return redirect()->route('phases');
+    }
+
+    public function finishTask($id)
+    {
+        $this->task = Task::find($id);
+        $this->task->is_finished = !$this->task->is_finished;
+        $this->task->save();
+        //condicional
+        $taskLeader = User::find($this->task->user_id);
+        //Mail::to($taskLeader->email)->queue(new TaskReminder);
     }
 
     public function updateTaskOrder($items)

@@ -30,12 +30,8 @@ class ProjectController extends Component
     public $end_time;
     public $hour_estimate;
     public $content;
-    public $image;
     public $priority;
     public $leader_id_assigned;
-    
-    public $urls = [];
-    public $path;
 
     public $search = '';
 
@@ -50,7 +46,6 @@ class ProjectController extends Component
             "end_time" => ['required', 'date', 'after_or_equal:start_time'],
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
-            "image.*" => ['nullable', 'mimes:jpeg,png,gif', 'max:2048'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'leader_id_assigned' => 'required',
             'leader_id_assigned.*' => 'required|exists:users,id',
@@ -62,7 +57,6 @@ class ProjectController extends Component
     protected $rules = [];
 
     public function mount(){
-        $this->path = public_path('/images');
         $this->rules = $this->rules();
     }
 
@@ -123,11 +117,6 @@ class ProjectController extends Component
 
     public function saveTask()
     {
-        $this->validate();
-        if(!File::exists($this->path)) {
-            Storage::disk('public')->makeDirectory('images');
-        }
-
         if(isset($this->leader_id_assigned)){
             User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
         }
@@ -140,20 +129,6 @@ class ProjectController extends Component
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
-        if(!empty($this->image)){
-            foreach ($this->image as $image) {
-                $name =  $image->getClientOriginalName();
-                $route = storage_path().'\app\public\images/'.$name;
-                Image::make($image)->resize(1200, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode('jpg')->save($route);
-                $urls[] = '/storage/images/'.$name;
-            }
-            $this->project->image = Crypt::encrypt(json_encode($urls));
-        }
-        else{
-            $this->project->image = null;
-        }
         $this->project->leader_id_assigned = $this->leader_id_assigned;
         $this->project->save();
         $this->openModal = false;
@@ -172,20 +147,6 @@ class ProjectController extends Component
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
-        if(!empty($this->image)){
-            foreach ($this->image as $image) {
-                $name =  $image->getClientOriginalName();
-                $route = storage_path().'\app\public\images/'.$name;
-                Image::make($image)->resize(1200, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode('jpg')->save($route);
-                $urls[] = '/storage/images/'.$name;
-            }
-            $this->project->image = Crypt::encrypt(json_encode($urls));
-        }
-        else{
-            $this->project->image = null;
-        }
         $this->project->save();
         $this->openModal = false;
     }
