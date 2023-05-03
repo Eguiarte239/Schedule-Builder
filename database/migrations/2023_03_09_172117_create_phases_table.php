@@ -22,10 +22,10 @@ return new class extends Migration
             $table->date('start_time');
             $table->date('end_time');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->nullable();
-            $table->unsignedBigInteger('assigned_to_project');
+            $table->unsignedBigInteger('project_id');
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('assigned_to_project')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects');
         });
     }
 

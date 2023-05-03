@@ -30,7 +30,7 @@ class Task extends Model
 
     public function phase()
     {
-        return $this->belongsTo(Phase::class, 'assigned_to_phase');
+        return $this->belongsTo(Phase::class, 'phase_id');
     }
 
     public function user()

@@ -25,7 +25,7 @@ class PhaseController extends Component
     public $hour_estimate;
     public $content;
     public $priority;
-    public $assigned_to_project;
+    public $project_id;
 
     public $search = '';
 
@@ -41,8 +41,8 @@ class PhaseController extends Component
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'assigned_to_project' => 'required',
-            'assigned_to_project.*' => 'required|exists:projects,id',
+            'project_id' => 'required',
+            'project_id.*' => 'required|exists:projects,id',
         ];
         
         return $rules;
@@ -121,7 +121,7 @@ class PhaseController extends Component
         $this->phase->hour_estimate = $this->hour_estimate;
         $this->phase->content = $this->content;
         $this->phase->priority = $this->priority;
-        $this->phase->assigned_to_project = $this->assigned_to_project;
+        $this->phase->project_id = $this->project_id;
         $this->phase->save();
         $this->openModal = false;
         return redirect()->route('phases');

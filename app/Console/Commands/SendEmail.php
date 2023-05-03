@@ -33,7 +33,7 @@ class SendEmail extends Command
     {
         $tasks = Task::all();
         foreach($tasks as $task){
-            if(Carbon::parse($task->end_time)->diffInDays(Carbon::now()) == 1){
+            if(Carbon::parse($task->end_time)->diffInDays(Carbon::now()) <= 1 && $task->is_finished == false){
                 Mail::to($task->user->email)->queue(new TaskReminder($task));
             }
         }
