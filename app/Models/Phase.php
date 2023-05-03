@@ -40,7 +40,7 @@ class Phase extends Model
      */
     public function project()
     {
-        return $this->belongsTo(Project::class, 'assigned_to_project');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function task()

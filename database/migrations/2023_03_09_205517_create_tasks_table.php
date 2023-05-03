@@ -22,13 +22,13 @@ return new class extends Migration
             $table->date('start_time');
             $table->date('end_time');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
-            $table->unsignedBigInteger('assigned_to_phase');
+            $table->unsignedBigInteger('phase_id');
             $table->unsignedBigInteger('assigned_to_task');
             $table->unsignedBigInteger('predecessor_task')->nullable();
             $table->boolean('is_finished')->default(false);
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('assigned_to_phase')->references('id')->on('phases');
+            $table->foreign('phase_id')->references('id')->on('phases');
             $table->foreign('assigned_to_task')->references('id')->on('users');
             $table->foreign('predecessor_task')->references('id')->on('tasks');
         });

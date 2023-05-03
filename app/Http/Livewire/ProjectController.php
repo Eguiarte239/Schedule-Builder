@@ -41,7 +41,8 @@ class ProjectController extends Component
     protected function rules()
     {
         $rules = [
-            "title" => ['required', 'string', 'max:255', new UniqueTitleForUser],
+            //"title" => ['required', 'string', 'max:255', new UniqueTitleForUser],
+            "title" => ['required', 'string', 'max:255'],
             "start_time" => ['required', 'date', 'after_or_equal:today'],
             "end_time" => ['required', 'date', 'after_or_equal:start_time'],
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],

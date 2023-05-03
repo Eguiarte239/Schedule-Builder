@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Mail\TaskReminder;
 use App\Models\Phase;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -28,7 +29,7 @@ class TaskList extends Component
     public $hour_estimate;
     public $content;
     public $priority;
-    public $assigned_to_phase;
+    public $phase_id;
     public $assigned_to_task;
     public $predecessor_task;
 
@@ -46,8 +47,8 @@ class TaskList extends Component
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'assigned_to_phase' => 'required',
-            'assigned_to_phase.*' => 'required|exists:phases,id',
+            'phase_id' => 'required',
+            'phase_id.*' => 'required|exists:phases,id',
             'assigned_to_task' => 'required',
             'assigned_to_task.*' => 'required|exists:users,id',
             'assigned_to_task' => 'required',
@@ -78,9 +79,11 @@ class TaskList extends Component
     {
         $tasks = $this->tasks;
         $phases = Phase::where('user_id', Auth::user()->id)->get();
+        $projectIds = $phases->pluck('project_id')->unique();
+        $projects = Project::whereIn('id', $projectIds)->get(); 
         $users = User::all();
         $taskCollection = Task::all();
-        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users, 'taskCollection' => $taskCollection])->layout('layouts.app');
+        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users, 'taskCollection' => $taskCollection, 'projects' => $projects])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -136,7 +139,7 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
-        $this->task->assigned_to_phase = $this->assigned_to_phase;
+        $this->task->phase_id = $this->phase_id;
         $this->task->assigned_to_task = $this->assigned_to_task;
         $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
@@ -156,6 +159,9 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
+        $this->task->phase_id = $this->phase_id;
+        $this->task->assigned_to_task = $this->assigned_to_task;
+        $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
         $this->openModal = false;
     }
