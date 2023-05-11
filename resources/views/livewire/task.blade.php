@@ -23,16 +23,13 @@
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
                     @foreach ($projects as $project)
                         <div class="col-span-4">
-                            <h1 class="text-4xl font-extrabold dark:text-white">{{ $project->title }}</h1>
+                            <h1 class="text-3xl font-extrabold dark:text-white">{{ $project->title }}</h1>
                         </div>
-                        @foreach ($phases as $phase)
-                            @if ($phase->project->id == $project->id)
-                                <div class="col-span-4">
-                                    <h1 class="text-4xl font-extrabold dark:text-white">{{ $phase->title }}</h1>
-                                </div>
-                            @endif
-                            @foreach ($tasks as $task)
-                                @if ($task->phase->id == $phase->id && $task->phase->project->id == $project->id )
+                        @foreach ($project->phase as $phase)
+                            <div class="col-span-4">
+                                <h1 class="text-2xl font-extrabold dark:text-white">{{ $phase->title }}</h1>
+                            </div>
+                            @foreach ($phase->task as $task)
                                     <div wire:sortable.item="{{ $task->id }}" wire:key="task-{{ $task->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
                                         <div class="px-2" wire:sortable.handle>
                                             <div class="flex flex-row justify-between">
@@ -52,13 +49,16 @@
                                                                     </svg>
                                                                 </button>
                                                                 @endif
-                                                                @endauth
-                                                                @endcan
-                                                    <button wire:click="finishTask({{ $task->id }})">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 {{ $task->is_finished ? 'stroke-emerald-300' : 'stroke-red-300' }}">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
-                                                        </svg> 
-                                                    </button>                                                         
+                                                            @endauth
+                                                        @endcan
+
+                                                    @if($task->predecessor_task == null || $task->predecessorTask->is_finished == true)
+                                                        <button wire:click="finishTask({{ $task->id }})">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 {{ $task->is_finished ? 'stroke-emerald-300' : 'stroke-red-300' }}">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+                                                            </svg> 
+                                                        </button>                                                         
+                                                    @endif
                                                 </div>
                                             </div>
                                                 <p class="mb-3 font-normal text-gray-700 dark:text-white">
@@ -107,7 +107,6 @@
                                             {{ $task->end_task }}
                                         </span>
                                     </div>
-                                @endif
                             @endforeach
                         @endforeach
                     @endforeach
@@ -175,35 +174,49 @@
                 </div>
             </div>
             <div class="mb-4">
-                <label for="phase_id" class="block mb-2 text-sm font-medium text-gray-900">
-                    Phases
+                <label for="project_id" class="block mb-2 text-sm font-medium text-gray-900">
+                    Projects
                 </label>
-                <select name="phase_id" id="phase_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="phase_id">
+                <select name="project_id" id="project_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="project_id">
                     <option value="" hidden selected></option>
-                    @foreach ($phases as $phase)
-                        <option value="{{ $phase->id }}">{{ $phase->title }}</option>
+                    @foreach ($projects as $project)
+                        <option value="{{ $project->id }}">{{ $project->title }}</option>
                     @endforeach
                 </select>
-                <x-jet-input-error for="phase_id"></x-jet-input-error>
-                <label for="assigned_to_task" class="block mb-2 text-sm font-medium text-gray-900">
-                    Users
-                </label>
-                <select name="assigned_to_task" id="assigned_to_task" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="assigned_to_task">
-                    <option value="" hidden selected></option>
-                    @foreach ($users as $user)
-                        @if ($user->auth()->id !== $user->id)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                        @endif
-                    @endforeach
-                </select>
-                <x-jet-input-error for="predecessor_task"></x-jet-input-error>
+                <x-jet-input-error for="project_id"></x-jet-input-error>
+                @if( !is_null($project_id) )    
+                    <label for="phase_id" class="block mb-2 text-sm font-medium text-gray-900">
+                        Phases
+                    </label>
+                    <select name="phase_id" id="phase_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="phase_id">
+                        <option value="" hidden selected></option>
+                        @foreach($projects->find($project_id)->phase as $phase)
+                            <option value="{{ $phase->id }}">{{ $phase->title }}</option>
+                        @endforeach
+                    </select>
+                    <x-jet-input-error for="phase_id"></x-jet-input-error>
+                @endif
                 <label for="predecessor_task" class="block mb-2 text-sm font-medium text-gray-900">
                     Predecessor task
                 </label>
                 <select name="predecessor_task" id="predecessor_task" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="predecessor_task">
                     <option value="" hidden selected></option>
-                    @foreach ($taskCollection as $taskItem)
-                        <option value="{{ $taskItem->id }}">{{ $taskItem->title }}</option>
+                    @foreach ($predecessorTasks as $predecessorTask)
+                        @if($predecessorTask->phase->project->id == $project_id)
+                            <option value="{{ $predecessorTask->id }}">{{ $predecessorTask->title }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <x-jet-input-error for="predecessor_task"></x-jet-input-error>
+                <label for="user_id_assigned" class="block mb-2 text-sm font-medium text-gray-900">
+                    Users
+                </label>
+                <select name="user_id_assigned" id="user_id_assigned" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="user_id_assigned">
+                    <option value="" hidden selected></option>
+                    @foreach ($users as $user)
+                        @if ($user->auth()->id !== $user->id)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endif
                     @endforeach
                 </select>
                 <x-jet-input-error for="predecessor_task"></x-jet-input-error>
@@ -228,6 +241,7 @@
                     wire:click="deleteTask({{ $this->task->id }})">
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
+                
                 <x-jet-button class="ml-3" wire:click="editTask({{ $this->task->id }})">
                     Save tasks
                 </x-jet-button>
@@ -241,5 +255,34 @@
 
     @push('js')
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            const Swal = window.Swal;
+            Livewire.on('alert', function(message, route) {
+                Swal.fire({
+                    imageUrl: 'https://media.tenor.com/2KK38LekJu0AAAAC/doki-doki-literature-club-mad.gif',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Oops...',
+                    text: message,
+                    timer: 5000,
+                }).then(function () {
+                    window.location.href = route;
+                });
+            })
+
+            Livewire.on('predecessor', function(message, route) {
+                Swal.fire({
+                    imageUrl: 'https://media.tenor.com/2KK38LekJu0AAAAC/doki-doki-literature-club-mad.gif',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Oops...',
+                    text: message,
+                    timer: 5000,
+                }).then(function () {
+                    window.location.href = route;
+                });
+            })
+        </script>
     @endpush
 </div>

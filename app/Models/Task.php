@@ -35,7 +35,12 @@ class Task extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to_task');
+        return $this->belongsTo(User::class, 'user_id_assigned');
+    }
+
+    public function predecessorTask()
+    {
+        return $this->belongsTo(Task::class, 'predecessor_task');
     }
 
     /**

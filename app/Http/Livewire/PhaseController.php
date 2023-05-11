@@ -4,14 +4,14 @@ namespace App\Http\Livewire;
 
 use App\Models\Phase;
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class PhaseController extends Component
 {
-    use AuthorizesRequests, WithPagination;
+    use AuthorizesRequests;
 
     protected $middleware = ['web', 'livewire:protect'];
 
@@ -29,6 +29,12 @@ class PhaseController extends Component
 
     public $search = '';
 
+    public $classMap = [
+        'Low' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+        'Medium' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+        'High' => 'bg-yellow-100 text-yellow-800 dark:bg-orange-900 dark:text-yellow-300',
+        'Urgent' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    ];
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
@@ -54,22 +60,19 @@ class PhaseController extends Component
         $this->rules = $this->rules();
     }
 
-    public function getPhasesProperty()
-    {
-        return Phase::where(function ($query) {
-            $query->where('user_id', Auth::user()->id);
-        })
-        ->where('title', 'like', '%'.$this->search.'%')
-        ->orderBy('order_position', 'asc')
-        ->get();
-    }
-
     public function render()
     {
-        //$role = Role::where('name', 'admin-user')->first();
-        $phases = $this->phases;
-        $projects = Project::all()->where('leader_id_assigned', Auth::user()->id);
-        return view('livewire.phase', ['phases' => $phases, 'projects' => $projects])->layout('layouts.app');
+        $projects = Project::where('leader_id_assigned', Auth::user()->id)->get();
+
+        $phases = Phase::with('project')
+                    ->where('user_id', Auth::user()->id)
+                    ->where('title', 'like', '%'.$this->search.'%')
+                    ->orderBy('order_position', 'asc')
+                    ->get();
+
+        $groupedPhases = $phases->groupBy('project_id');
+
+        return view('livewire.phase', ['projects' => $projects, 'groupedPhases' => $groupedPhases, ])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -157,6 +160,19 @@ class PhaseController extends Component
             $phase = Phase::find($item['value']);
             $phase->order_position = $item['order'];
             $phase->save();
+        }
+    }
+
+    public function getProgressPercentage($id)
+    {
+        if(Task::where('phase_id', $id)->count() > 0)
+        {
+            $tasks = Task::where('phase_id', $id)->get();
+            $completedTasksCount = $tasks->filter(function ($task) {
+                return $task->is_finished;
+            })->count();
+            $percentage = ($completedTasksCount / $tasks->count()) * 100;
+            return round($percentage) . '%';
         }
     }
 }
