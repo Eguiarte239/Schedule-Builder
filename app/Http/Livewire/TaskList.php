@@ -2,14 +2,12 @@
 
 namespace App\Http\Livewire;
 
-use App\Mail\TaskReminder;
 use App\Models\Phase;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -29,8 +27,9 @@ class TaskList extends Component
     public $hour_estimate;
     public $content;
     public $priority;
+    public $project_id;
     public $phase_id;
-    public $assigned_to_task;
+    public $user_id_assigned;
     public $predecessor_task;
 
     public $search = '';
@@ -47,11 +46,13 @@ class TaskList extends Component
             "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
+            'project_id' => 'required',
+            'project_id.*' => 'required|exists:projects,id',
             'phase_id' => 'required',
             'phase_id.*' => 'required|exists:phases,id',
-            'assigned_to_task' => 'required',
-            'assigned_to_task.*' => 'required|exists:users,id',
-            'assigned_to_task' => 'required',
+            'user_id_assigned' => 'required',
+            'user_id_assigned.*' => 'required|exists:users,id',
+            'predecessor_task' => 'nullable',
             'predecessor_task.*' => 'nullable|exists:tasks,id',
         ];
         
@@ -64,26 +65,27 @@ class TaskList extends Component
         $this->rules = $this->rules();
     }
 
-    public function getTasksProperty()
-    {
-        return Task::where(function ($query) {
-            $query->where('user_id', Auth::user()->id)
-                    ->orWhereJsonContains('assigned_to_task', Auth::user()->id);
-        })
-        ->where('title', 'like', '%'.$this->search.'%')
-        ->orderBy('order_position', 'asc')
-        ->get();
-    }
-
     public function render()
     {
-        $tasks = $this->tasks;
-        $phases = Phase::where('user_id', Auth::user()->id)->get();
-        $projectIds = $phases->pluck('project_id')->unique();
-        $projects = Project::whereIn('id', $projectIds)->get(); 
+        $user = Auth::user();
+
+        $projectIds = Phase::where('user_id', $user->id)
+                    ->orWhereHas('task', function ($query) use ($user) {
+                        $query->where('user_id_assigned', 'LIKE', '%'.$user->id.'%');
+                    })
+                    ->groupBy('project_id')
+                    ->pluck('project_id');
+
+        $projects = Project::whereIn('id', $projectIds)->with(['phase.task' => function($query) use ($user) {
+                $query->where('user_id', $user->id)->orWhere('user_id_assigned', 'LIKE', '%'.$user->id.'%')
+                    ->orderBy('order_position', 'asc');
+            }
+        ])->get();
+
         $users = User::all();
-        $taskCollection = Task::all();
-        return view('livewire.task', ['tasks' => $tasks, 'phases' => $phases, 'users' => $users, 'taskCollection' => $taskCollection, 'projects' => $projects])->layout('layouts.app');
+        $predecessorTasks = Task::all();
+
+        return view('livewire.task', ['projects' => $projects, 'users' => $users, 'predecessorTasks' => $predecessorTasks])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -127,8 +129,8 @@ class TaskList extends Component
     {
         $this->validate();
 
-        if(isset($this->assigned_to_task)){
-            User::find(intval($this->assigned_to_task))->assignRole('employee-user');
+        if(isset($this->user_id_assigned)){
+            User::find(intval($this->user_id_assigned))->assignRole('employee-user');
         }
 
         $this->task = new Task();
@@ -139,8 +141,9 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
+        $this->task->project_id = $this->project_id;
         $this->task->phase_id = $this->phase_id;
-        $this->task->assigned_to_task = $this->assigned_to_task;
+        $this->task->user_id_assigned = $this->user_id_assigned;
         $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
         $this->openModal = false;
@@ -159,8 +162,9 @@ class TaskList extends Component
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
+        $this->task->project_id = $this->project_id;
         $this->task->phase_id = $this->phase_id;
-        $this->task->assigned_to_task = $this->assigned_to_task;
+        $this->task->user_id_assigned = $this->user_id_assigned;
         $this->task->predecessor_task = $this->predecessor_task;
         $this->task->save();
         $this->openModal = false;
@@ -168,18 +172,41 @@ class TaskList extends Component
 
     public function deleteTask($id)
     {
-        Task::destroy($id);
-        $this->openModal = false;
-        return redirect()->route('phases');
+        $task = Task::find($id);
+        $hasPredecessor = Task::where('predecessor_task', $id)->exists();
+        if ($hasPredecessor)
+        {
+            $this->emit('alert', "You can't delete a task which is a predecessor of another", route('tasks'));
+        } 
+        else
+        {
+            $task->destroy($id);
+            $this->openModal = false;
+            return redirect()->route('tasks');
+        }
     }
 
     public function finishTask($id)
     {
         $this->task = Task::find($id);
-        $this->task->is_finished = !$this->task->is_finished;
-        $this->task->save();
+        $isPredecessor = Task::where('predecessor_task', $this->task->id)->exists();
+        $dependentTasks = Task::where('predecessor_task', $this->task->id)->get();
+        $allSuccessorsMarked = true;
+        foreach ($dependentTasks as $dependentTask) {
+            if ($dependentTask->is_finished == false) {
+                $allSuccessorsMarked = false;
+                break;
+            }
+        }
+        if($isPredecessor == true && $allSuccessorsMarked == true){
+            $this->emit('predecessor', "You can't unmark a task which is predecessor of another until you unmark that one", route('tasks'));
+        }
+        else{
+            $this->task->is_finished = !$this->task->is_finished;
+            $this->task->save();
+        }
         //condicional
-        $taskLeader = User::find($this->task->user_id);
+        //$taskLeader = User::find($this->task->user_id);
         //Mail::to($taskLeader->email)->queue(new TaskReminder);
     }
 

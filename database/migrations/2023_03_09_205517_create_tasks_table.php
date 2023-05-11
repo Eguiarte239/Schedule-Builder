@@ -22,14 +22,16 @@ return new class extends Migration
             $table->date('start_time');
             $table->date('end_time');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
+            $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('phase_id');
-            $table->unsignedBigInteger('assigned_to_task');
+            $table->unsignedBigInteger('user_id_assigned');
             $table->unsignedBigInteger('predecessor_task')->nullable();
             $table->boolean('is_finished')->default(false);
             $table->integer('order_position')->nullable();
             $table->timestamps();
+            $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('phase_id')->references('id')->on('phases');
-            $table->foreign('assigned_to_task')->references('id')->on('users');
+            $table->foreign('user_id_assigned')->references('id')->on('users');
             $table->foreign('predecessor_task')->references('id')->on('tasks');
         });
     }

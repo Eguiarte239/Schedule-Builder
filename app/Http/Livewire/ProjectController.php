@@ -4,26 +4,19 @@ namespace App\Http\Livewire;
 
 use App\Models\Project;
 use App\Models\User;
-use App\Rules\UniqueTitleForUser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
-use Livewire\WithFileUploads;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Livewire\WithPagination;
 
 class ProjectController extends Component
 {
-    use WithFileUploads, AuthorizesRequests, WithPagination;
+    use AuthorizesRequests;
 
     protected $middleware = ['web', 'livewire:protect'];
 
     public $project;
     public $openModal = false;
-    public $editTask = false;
+    public $editProject = false;
 
     public $title;
     public $start_time;
@@ -35,13 +28,18 @@ class ProjectController extends Component
 
     public $search = '';
 
+    public $classMap = [
+        'Low' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+        'Medium' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+        'High' => 'bg-yellow-100 text-yellow-800 dark:bg-orange-900 dark:text-yellow-300',
+        'Urgent' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    ];
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected function rules()
     {
         $rules = [
-            //"title" => ['required', 'string', 'max:255', new UniqueTitleForUser],
             "title" => ['required', 'string', 'max:255'],
             "start_time" => ['required', 'date', 'after_or_equal:today'],
             "end_time" => ['required', 'date', 'after_or_equal:start_time'],
@@ -65,11 +63,11 @@ class ProjectController extends Component
     {
         return Project::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
-                  ->orWhereJsonContains('leader_id_assigned', Auth::user()->id);
+                  ->orWhere('leader_id_assigned', 'LIKE', '%'.Auth::user()->id.'%');
         })
         ->where('title', 'like', '%'.$this->search.'%')
         ->orderBy('order_position', 'asc')
-        ->get();
+        ->get();        
     }
 
     public function render()
@@ -105,18 +103,18 @@ class ProjectController extends Component
     {
         $this->resetValues();
         $this->resetValidation();
-        $this->editTask = false;
+        $this->editProject = false;
         $this->openModal = true;
     }
 
-    public function editNote($id)
+    public function editProjectNote($id)
     {
         $this->setValues($id);
-        $this->editTask = true;
+        $this->editProject = true;
         $this->openModal = true;
     }
 
-    public function saveTask()
+    public function saveProject()
     {
         if(isset($this->leader_id_assigned)){
             User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
@@ -136,7 +134,7 @@ class ProjectController extends Component
         return redirect()->route('projects');
     }
 
-    public function editTask($id)
+    public function editProject($id)
     {
         $this->validate();
 
@@ -152,7 +150,7 @@ class ProjectController extends Component
         $this->openModal = false;
     }
 
-    public function deleteTask($id)
+    public function deleteProject($id)
     {
         Project::destroy($id);
         $this->openModal = false;
