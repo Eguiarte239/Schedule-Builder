@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Livewire\PhaseController;
 use App\Http\Livewire\ProjectController;
-use App\Http\Livewire\TaskList;
+use App\Http\Livewire\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', ProjectController::class)->name('projects');
     Route::get('/phase', PhaseController::class)->name('phases');
-    Route::get('/task', TaskList::class)->name('tasks');
+    Route::get('/task', TaskController::class)->name('tasks');
     Route::get('/task-reminder', function (){
         return view('mails.task-reminder');
     })->name('task-reminder');

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class TaskList extends Component
+class TaskController extends Component
 {
     use AuthorizesRequests, WithPagination;
 
