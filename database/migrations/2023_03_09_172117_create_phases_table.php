@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->float('hour_estimate');
-            $table->date('start_time');
-            $table->date('end_time');
-            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
             $table->unsignedBigInteger('project_id');
+            $table->boolean('is_finished')->default(false);
             $table->integer('order_position')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');

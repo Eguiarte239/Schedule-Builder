@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('content');
             $table->float('hour_estimate');
-            $table->date('start_time');
-            $table->date('end_time');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('phase_id');

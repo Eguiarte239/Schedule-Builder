@@ -8,14 +8,14 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
-class SendEmail extends Command
+class ReminderEmail extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'emails:send';
+    protected $signature = 'reminder:send';
 
     /**
      * The console command description.
@@ -33,7 +33,7 @@ class SendEmail extends Command
     {
         $tasks = Task::all();
         foreach($tasks as $task){
-            if(Carbon::parse($task->end_time)->diffInDays(Carbon::now()) <= 1 && $task->is_finished == false){
+            if(Carbon::parse($task->end_date)->diffInDays(Carbon::now()) <= 1 && $task->is_finished == false){
                 Mail::to($task->user->email)->queue(new TaskReminder($task));
             }
         }

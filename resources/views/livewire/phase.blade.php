@@ -10,15 +10,17 @@
                     </div>
                 @endcan
                 
-                @include('livewire.search_bar', ['search' => $search])
+                @include('livewire.search_bar', ['search' => $search, 'tasks' => false])
 
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
                     @foreach ($projects as $project)
-                        @include('livewire.project_info', ['project' => $project, 'projects' => false])
-                        @if (isset($groupedPhases[$project->id]))
-                            @foreach ($groupedPhases[$project->id] as $phase)
-                                @include('livewire.phase_info', ['phase' => $phase])
-                            @endforeach
+                        @if($groupedPhases->isNotEmpty())
+                            @include('livewire.project_info', ['project' => $project, 'projects' => false])
+                            @if (isset($groupedPhases[$project->id]))
+                                @foreach ($groupedPhases[$project->id] as $phase)
+                                    @include('livewire.phase_info', ['phase' => $phase, 'phases' => true])
+                                @endforeach
+                            @endif
                         @endif
                     @endforeach
                 </div>
@@ -82,5 +84,21 @@
 
     @push('js')
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            const Swal = window.Swal;
+            Livewire.on('alert', function(message, route) {
+                Swal.fire({
+                    imageUrl: 'https://media.tenor.com/2KK38LekJu0AAAAC/doki-doki-literature-club-mad.gif',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Oops...',
+                    text: message,
+                    timer: 5000,
+                }).then(function () {
+                    window.location.href = route;
+                });
+            })
+        </script>
     @endpush
 </div>

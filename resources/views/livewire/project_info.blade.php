@@ -18,32 +18,27 @@
                     @endcan
                 </div>
             </div>
-                <p class="mb-3 font-normal text-gray-700 dark:text-white">
-                    {{ $project->content }}
+            @if($this->getProgressPercentage($project->id) > 0)   
+                <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                    <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: {{ $this->getProgressPercentage($project->id) }}"> {{ $this->getProgressPercentage($project->id) }}</div>
+                </div>
+            @endif
+            <p class="mb-3 text-lg text-gray-500 md:text-base dark:text-white">
+                {{ $project->content }}
+                <br>
+                    Project leader: {{ $project->user->name }}
                 <br>
                 <span class="bg-blue-100 text-blue-800 text-ms font-medium inline-flex px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
                     <svg aria-hidden="true" class="w-4 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
                     Estimated hours: {{ $project->hour_estimate }}
                 </span>
                 <br>
-                @if ($project->priority == 'Low')
-                    <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                        {{ $project->priority }}
-                    </span>
-                @elseif ($project->priority == 'Medium')
-                    <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                        {{ $project->priority }}
-                    </span>
-                @elseif ($project->priority == 'High')
-                    <span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-orange-900 dark:text-yellow-300">
-                        {{ $project->priority }}
-                    </span>
-                @else
-                    <span class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                        {{ $project->priority }}
-                    </span>
-                @endif
-                
+                @php
+                    $class = $classMap[$project->priority];
+                @endphp
+                <span class="{{ $class }} text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
+                    {{ $project->priority }}
+                </span> 
             </p>
         </div>
         <span

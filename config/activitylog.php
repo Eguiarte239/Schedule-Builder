@@ -17,7 +17,7 @@ return [
      * If no log name is passed to the activity() helper
      * we use this default log name.
      */
-    'default_log_name' => 'tasks_log',
+    'default_log_name' => 'tasks_log', // en caso de fallar, era tasks_log
 
     /*
      * You can specify an auth driver here that gets user models.

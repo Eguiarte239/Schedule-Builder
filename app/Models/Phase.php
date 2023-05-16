@@ -22,8 +22,8 @@ class Phase extends Model
         'title',
         'content',
         'hour_estimate',
-        'start_time',
-        'end_time',
+        'start_date',
+        'end_date',
         'priority',
     ];
 
@@ -55,7 +55,7 @@ class Phase extends Model
      */
     public function getStartTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->start_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->start_date)->format('l jS \of F Y');
     }
 
     /**
@@ -65,6 +65,6 @@ class Phase extends Model
      */
     public function getEndTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
 }

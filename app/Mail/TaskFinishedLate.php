@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TaskReminder extends Mailable
+class TaskFinishedLate extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,7 +30,7 @@ class TaskReminder extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Task Reminder',
+            subject: 'Task Finished Late',
         );
     }
 
@@ -42,7 +42,7 @@ class TaskReminder extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mails.task-reminder'
+            view: 'mails.task-finished-late',
         );
     }
 

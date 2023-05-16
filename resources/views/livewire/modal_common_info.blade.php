@@ -22,22 +22,22 @@
         <x-jet-input-error for="priority"></x-jet-input-error>
     </div>
     <div>
-        <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
-            Start time
+        <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900">
+            Start date
         </label>
-        <input wire:model="start_time" id="start_time" type="date"
+        <input wire:model="start_date" id="start_date" type="date"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required>
-        <x-jet-input-error for="start_time"></x-jet-input-error>
+        <x-jet-input-error for="start_date"></x-jet-input-error>
     </div>
     <div>
-        <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
-            End time
+        <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
+            End date
         </label>
-        <input wire:model="end_time" type="date" id="end_time"
+        <input wire:model="end_date" type="date" id="end_date"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required>
-        <x-jet-input-error for="end_time"></x-jet-input-error>
+        <x-jet-input-error for="end_date"></x-jet-input-error>
     </div>
     <div>
         <label for="hour_estimate" class="block mb-2 text-sm font-medium text-gray-900">

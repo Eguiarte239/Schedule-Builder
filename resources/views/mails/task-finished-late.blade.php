@@ -11,8 +11,8 @@
             background-color: #f7fafc;
         }
                             
-        .stroke-yellow-500 {
-            stroke: #eab308;
+        .stroke-green-600 {
+            color: #16a34a;
         }
 
         .mx-auto{
@@ -103,12 +103,12 @@
         <div class="flex items-center justify-center min-h-screen p-5 bg-blue-100 min-w-screen">
             <div class="mx-auto max-w-2xl p-6 bg-white shadow-md rounded-md">
                 <div class="flex justify-center items-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12 stroke-yellow-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12 stroke-green-600">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
                     </svg>
                 </div>
-                <h1 class="text-2xl font-bold mb-4 text-center">Task reminder</h1>
-                <p class="text-lg text-center leading-7">Hello {{ $task->user->name }}. The due date of one of your tasks is close. <br> {{ $task->title }} with due date: {{ $task->getEndTaskAttribute() }}</p>
+                <h1 class="text-2xl font-bold mb-4 text-center">Task finished</h1>
+                <p class="text-lg text-center leading-7">Hello {{ $task->leader->name }}. One of the tasks you've assigned has been completed late. <br> {{ $task->title }} from {{ $task->project->title }}</p>
             </div>
         </div>
     </body>

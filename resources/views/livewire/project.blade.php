@@ -10,7 +10,7 @@
                     </div>
                 @endcan
 
-                @include('livewire.search_bar', ['search' => $search])
+                @include('livewire.search_bar', ['search' => $search, 'tasks' => false])
 
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
                     @foreach ($projects as $project)
@@ -45,7 +45,12 @@
                 </select>
                 <x-jet-input-error for="leader_id_assigned"></x-jet-input-error>
             </div>
-            
+            <div wire:ignore>
+                <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
+                    Description
+                </label>
+                <textarea wire:model="content" name="editor" id="editor" cols="30" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
+            </div>
             <x-jet-input-error for="content"></x-jet-input-error>
 
         </x-slot>
@@ -75,5 +80,21 @@
 
     @push('js')
         <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            const Swal = window.Swal;
+            Livewire.on('alert', function(message, route) {
+                Swal.fire({
+                    imageUrl: 'https://media.tenor.com/2KK38LekJu0AAAAC/doki-doki-literature-club-mad.gif',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Oops...',
+                    text: message,
+                    timer: 5000,
+                }).then(function () {
+                    window.location.href = route;
+                });
+            })
+        </script>
     @endpush
 </div>
