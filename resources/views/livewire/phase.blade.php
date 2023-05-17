@@ -14,13 +14,11 @@
 
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
                     @foreach ($projects as $project)
-                        @if($groupedPhases->isNotEmpty())
+                        @if (isset($groupedPhases[$project->id]) && $groupedPhases[$project->id]->isNotEmpty())
                             @include('livewire.project_info', ['project' => $project, 'projects' => false])
-                            @if (isset($groupedPhases[$project->id]))
-                                @foreach ($groupedPhases[$project->id] as $phase)
-                                    @include('livewire.phase_info', ['phase' => $phase, 'phases' => true])
-                                @endforeach
-                            @endif
+                            @foreach ($groupedPhases[$project->id] as $phase)
+                                @include('livewire.phase_info', ['phase' => $phase, 'phases' => true])
+                            @endforeach
                         @endif
                     @endforeach
                 </div>

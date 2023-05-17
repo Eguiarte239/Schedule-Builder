@@ -9,22 +9,53 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
+use Livewire\Component;
+use Livewire\WithPagination;
 
-class TaskController extends CommonController
+class TaskController extends Component
 {
+    use AuthorizesRequests, WithPagination;
+
+    protected $middleware = ['web', 'livewire:protect'];
+
     public $task;
+    public $openModal = false;
     public $editTask = false;
+
+    public $title;
+    public $start_date;
+    public $end_date;
+    public $hour_estimate;
+    public $content;
+    public $priority;
+    public $project_id;
+    public $phase_id;
+    public $user_id_assigned;
+    public $predecessor_task;
+
+    public $search = '';
+
+
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected function rules()
     {
         $rules = [
             "title" => ['required', 'string', 'max:255'],
-            "start_date" => [Rule::excludeIf($this->task && $this->start_date == $this->task->start_date), 'required', 'date', 'after_or_equal:today'],
-            "end_date" => ['required', 'date', 'after_or_equal:start_date'],
+            "start_date" => [
+                Rule::when($this->task && $this->start_date != $this->task->start_date, function () {
+                    return ['required', 'date', 'after_or_equal:today'];
+                }),
+            ],
+            "end_date" => [
+                Rule::when($this->task, function () {
+                    return ['required', 'date', 'after_or_equal:start_date'];
+                }),
+            ],
             "hour_estimate" => ['required', 'integer', 'between:0,100'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
@@ -114,17 +145,9 @@ class TaskController extends CommonController
         $this->emit('new-task-alert', "Once you save your task, its start date won't be able to be changed to a previous date");
     }
 
-    public function editTaskNote($id)
-    {
-        $this->setValues($id);
-        $this->editTask = true;
-        $this->openModal = true;
-    }
-
     public function saveTask()
     {
         $this->validate();
-
         if(isset($this->user_id_assigned)){
             User::find(intval($this->user_id_assigned))->assignRole('employee-user');
         }
@@ -147,6 +170,13 @@ class TaskController extends CommonController
         }
         $this->task->save();
         $this->openModal = false;
+    }
+
+    public function editTaskNote($id)
+    {
+        $this->setValues($id);
+        $this->editTask = true;
+        $this->openModal = true;
     }
 
     public function editTask($id)

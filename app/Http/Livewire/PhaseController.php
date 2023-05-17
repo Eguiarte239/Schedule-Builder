@@ -6,20 +6,54 @@ use App\Models\Phase;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Livewire\Component;
 
-class PhaseController extends CommonController
+class PhaseController extends Component
 {
+    use AuthorizesRequests;
+
+    protected $middleware = ['web', 'livewire:protect'];
+
     public $phase;
+    public $openModal = false;
     public $editPhase = false;
+
+    public $title;
+    public $start_date;
+    public $end_date;
+    public $hour_estimate;
+    public $content;
+    public $priority;
+    public $project_id;
+
+    public $search = '';
+
+    public $classMap = [
+        'Low' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+        'Medium' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+        'High' => 'bg-yellow-100 text-yellow-800 dark:bg-orange-900 dark:text-yellow-300',
+        'Urgent' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    ];
+
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected function rules()
     {
         $rules = [
             "title" => ['required', 'string', 'max:255'],
-            "start_date" => [Rule::excludeIf($this->phase && $this->start_date == $this->phase->start_date), 'required', 'date', 'after_or_equal:today'],
-            "end_date" => ['required', 'date', 'after_or_equal:start_date'],
+            "start_date" => [
+                Rule::when($this->phase && $this->start_date != $this->phase->start_date, function () {
+                    return ['required', 'date', 'after_or_equal:today'];
+                }),
+            ],
+            "end_date" => [
+                Rule::when($this->phase, function () {
+                    return ['required', 'date', 'after_or_equal:start_date'];
+                }),
+            ],
             "hour_estimate" => ['required', 'integer', 'min:1'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
@@ -57,7 +91,7 @@ class PhaseController extends CommonController
 
         $groupedPhases = $phases->groupBy('project_id');
 
-        return view('livewire.phase', ['projects' => $projects, 'groupedPhases' => $groupedPhases, ])->layout('layouts.app');
+        return view('livewire.phase', ['projects' => $projects, 'groupedPhases' => $groupedPhases ])->layout('layouts.app');
     }
 
     public function setValues($id)
@@ -91,13 +125,6 @@ class PhaseController extends CommonController
         $this->openModal = true;
     }
 
-    public function editPhaseNote($id)
-    {
-        $this->setValues($id);
-        $this->editPhase = true;
-        $this->openModal = true;
-    }
-
     public function savePhase()
     {
         $this->validate();
@@ -113,6 +140,13 @@ class PhaseController extends CommonController
         $this->phase->project_id = $this->project_id;
         $this->phase->save();
         $this->openModal = false;
+    }
+
+    public function editPhaseNote($id)
+    {
+        $this->setValues($id);
+        $this->editPhase = true;
+        $this->openModal = true;
     }
 
     public function editPhase($id)
@@ -155,20 +189,20 @@ class PhaseController extends CommonController
 
     public function getProgressPercentage($id)
     {
-        $this->phase = Phase::find($id);
+        $phase = Phase::find($id);
         if(Task::where('phase_id', $id)->count() > 0)
         {
             $tasks = Task::where('phase_id', $id)->get();
             $completedTasksCount = $tasks->filter(function ($task) {
                 return $task->is_finished;
             })->count();
-            if($completedTasksCount == $this->phase->task()->count()) {
-                $this->phase->is_finished = true;
+            if($completedTasksCount == $phase->task()->count()){
+                $phase->is_finished = true;
             }
             else{
-                $this->phase->is_finished = false;
+                $phase->is_finished = false;
             }
-            $this->phase->save();
+            $phase->save();
             $percentage = ($completedTasksCount / $tasks->count()) * 100;
             return round($percentage) . '%';
         }

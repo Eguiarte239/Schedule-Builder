@@ -10,10 +10,34 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
-class ProjectController extends CommonController
+class ProjectController extends Component
 {
+    use AuthorizesRequests;
+
+    protected $middleware = ['web', 'livewire:protect'];
+
     public $project;
+    public $openModal = false;
     public $editProject = false;
+
+    public $title;
+    public $start_date;
+    public $end_date;
+    public $hour_estimate;
+    public $content;
+    public $priority;
+    public $leader_id_assigned;
+
+    public $search = '';
+
+    public $classMap = [
+        'Low' => 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+        'Medium' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+        'High' => 'bg-yellow-100 text-yellow-800 dark:bg-orange-900 dark:text-yellow-300',
+        'Urgent' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    ];
+
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected function rules()
     {
@@ -86,21 +110,12 @@ class ProjectController extends CommonController
         $this->openModal = true;
     }
 
-    public function editProjectNote($id)
-    {
-        $this->setValues($id);
-        $this->editProject = true;
-        $this->openModal = true;
-    }
-
     public function saveProject()
     {
         $this->validate();
-        
         if(isset($this->leader_id_assigned)){
             User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
         }
-
         $this->project = new Project();
         $this->project->user_id = Auth::user()->id;
         $this->project->title = $this->title;
@@ -114,10 +129,16 @@ class ProjectController extends CommonController
         $this->openModal = false;
     }
 
+    public function editProjectNote($id)
+    {
+        $this->setValues($id);
+        $this->editProject = true;
+        $this->openModal = true;
+    }
+
     public function editProject($id)
     {
         $this->validate();
-
         $this->project = Project::find($id);
         $this->project->user_id = Auth::user()->id;
         $this->project->title = $this->title;
