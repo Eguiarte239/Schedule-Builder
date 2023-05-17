@@ -25,9 +25,6 @@ Route::middleware([
     Route::get('/', ProjectController::class)->name('projects');
     Route::get('/phase', PhaseController::class)->name('phases');
     Route::get('/task', TaskController::class)->name('tasks');
-    /*Route::get('/task-reminder', function (){
-        return view('mails.task-reminder');
-    })->name('task-reminder');*/
 });
 
 Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
