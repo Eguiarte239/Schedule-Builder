@@ -17,8 +17,8 @@ class Task extends Model
         'title',
         'content',
         'hour_estimate',
-        'start_time',
-        'end_time',
+        'start_date',
+        'end_date',
         'priority',
     ];
 
@@ -26,6 +26,11 @@ class Task extends Model
     {
         return LogOptions::defaults()
         ->logFillable();
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function phase()
@@ -36,6 +41,11 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id_assigned');
+    }
+
+    public function leader()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function predecessorTask()
@@ -50,7 +60,7 @@ class Task extends Model
      */
     public function getStartTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->start_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->start_date)->format('l jS \of F Y');
     }
 
     /**
@@ -60,7 +70,7 @@ class Task extends Model
      */
     public function getEndTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
 
 }

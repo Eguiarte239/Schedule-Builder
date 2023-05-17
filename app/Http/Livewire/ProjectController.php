@@ -2,10 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Phase;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class ProjectController extends Component
@@ -19,8 +21,8 @@ class ProjectController extends Component
     public $editProject = false;
 
     public $title;
-    public $start_time;
-    public $end_time;
+    public $start_date;
+    public $end_date;
     public $hour_estimate;
     public $content;
     public $priority;
@@ -41,9 +43,9 @@ class ProjectController extends Component
     {
         $rules = [
             "title" => ['required', 'string', 'max:255'],
-            "start_time" => ['required', 'date', 'after_or_equal:today'],
-            "end_time" => ['required', 'date', 'after_or_equal:start_time'],
-            "hour_estimate" => ['required', 'integer', 'between:0,100.99'],
+            "start_date" => [Rule::excludeIf($this->project && $this->start_date == $this->project->start_date), 'required', 'date', 'after_or_equal:today'],
+            "end_date" => ['required', 'date', 'after_or_equal:start_date'],
+            "hour_estimate" => ['required', 'integer', 'between:0,100'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'leader_id_assigned' => 'required',
@@ -81,19 +83,20 @@ class ProjectController extends Component
     {
         $this->project = Project::find($id);
         $this->title = $this->project->title;
-        $this->start_time = $this->project->start_time;
-        $this->end_time = $this->project->end_time;
+        $this->start_date = $this->project->start_date;
+        $this->end_date = $this->project->end_date;
         $this->hour_estimate = $this->project->hour_estimate;
         $this->content = $this->project->content;
         $this->priority = $this->project->priority;
+        $this->leader_id_assigned = $this->project->leader_id_assigned;
     }
 
     public function resetValues()
     {
         $this->project = new Project();
         $this->title = "";
-        $this->start_time = now()->format('Y-m-d');
-        $this->end_time = "";
+        $this->start_date = now()->format('Y-m-d');
+        $this->end_date = "";
         $this->hour_estimate = "";
         $this->content = "";
         $this->priority = null;
@@ -107,6 +110,25 @@ class ProjectController extends Component
         $this->openModal = true;
     }
 
+    public function saveProject()
+    {
+        $this->validate();
+        if(isset($this->leader_id_assigned)){
+            User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
+        }
+        $this->project = new Project();
+        $this->project->user_id = Auth::user()->id;
+        $this->project->title = $this->title;
+        $this->project->start_date = $this->start_date;
+        $this->project->end_date = $this->end_date;
+        $this->project->hour_estimate = $this->hour_estimate;
+        $this->project->content = $this->content;
+        $this->project->priority = $this->priority;
+        $this->project->leader_id_assigned = $this->leader_id_assigned;
+        $this->project->save();
+        $this->openModal = false;
+    }
+
     public function editProjectNote($id)
     {
         $this->setValues($id);
@@ -114,35 +136,14 @@ class ProjectController extends Component
         $this->openModal = true;
     }
 
-    public function saveProject()
-    {
-        if(isset($this->leader_id_assigned)){
-            User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
-        }
-
-        $this->project = new Project();
-        $this->project->user_id = Auth::user()->id;
-        $this->project->title = $this->title;
-        $this->project->start_time = $this->start_time;
-        $this->project->end_time = $this->end_time;
-        $this->project->hour_estimate = $this->hour_estimate;
-        $this->project->content = $this->content;
-        $this->project->priority = $this->priority;
-        $this->project->leader_id_assigned = $this->leader_id_assigned;
-        $this->project->save();
-        $this->openModal = false;
-        return redirect()->route('projects');
-    }
-
     public function editProject($id)
     {
         $this->validate();
-
         $this->project = Project::find($id);
         $this->project->user_id = Auth::user()->id;
         $this->project->title = $this->title;
-        $this->project->start_time = $this->start_time;
-        $this->project->end_time = $this->end_time;
+        $this->project->start_date = $this->start_date;
+        $this->project->end_date = $this->end_date;
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
@@ -152,9 +153,14 @@ class ProjectController extends Component
 
     public function deleteProject($id)
     {
-        Project::destroy($id);
-        $this->openModal = false;
-        return redirect()->route('projects');
+        if(Phase::where('project_id', $id)->count() == 0){
+            Project::destroy($id);
+            $this->openModal = false;
+            return redirect()->route('projects');
+        }
+        else{
+            $this->emit('alert', "You can't delete a project that already has phases assigned", route('projects'));
+        }
     }
 
     public function updateTaskOrder($items)
@@ -164,6 +170,19 @@ class ProjectController extends Component
             $project = Project::find($item['value']);
             $project->order_position = $item['order'];
             $project->save();
+        }
+    }
+
+    public function getProgressPercentage($id)
+    {
+        if(Phase::where('project_id', $id)->count() > 0)
+        {
+            $phases = Phase::where('project_id', $id)->get();
+            $completedPhasessCount = $phases->filter(function ($phase) {
+                return $phase->is_finished;
+            })->count();
+            $percentage = ($completedPhasessCount / $phases->count()) * 100;
+            return round($percentage) . '%';
         }
     }
 }

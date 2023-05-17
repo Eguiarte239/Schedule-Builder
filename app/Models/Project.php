@@ -23,8 +23,8 @@ class Project extends Model
         'title',
         'content',
         'hour_estimate',
-        'start_time',
-        'end_time',
+        'start_date',
+        'end_date',
         'image',
         'priority',
     ];
@@ -42,7 +42,7 @@ class Project extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'leader_id_assigned');
     }
 
     public function phase()
@@ -58,7 +58,7 @@ class Project extends Model
      */
     public function getStartTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->start_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->start_date)->format('l jS \of F Y');
     }
 
     /**
@@ -68,6 +68,6 @@ class Project extends Model
      */
     public function getEndTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->end_time)->format('l jS \of F Y');
+        return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
 }
