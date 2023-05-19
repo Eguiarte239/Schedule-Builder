@@ -73,4 +73,19 @@ class Task extends Model
         return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
 
+    public static function phaseEndDate($phase_id)
+    {
+        return Phase::where('id', $phase_id)->value('end_date');
+    }
+    
+    public static function phaseEstimatedHours($phase_id)
+    {
+        return Phase::where('id', $phase_id)->sum('hour_estimate');
+    }
+
+    public static function totalEstimatedHoursForPhase($phase_id)
+    {
+        return self::where('phase_id', $phase_id)->sum('hour_estimate');
+    }
+
 }

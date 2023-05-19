@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -26,6 +27,11 @@ class GoogleAuthController extends Controller
     
         if($userExists && $userExists->external_id === $user->id && $userExists->external_auth === 'google'){
             Auth::login($userExists);
+        }
+        elseif ($userExists) {
+            throw ValidationException::withMessages([
+                'email' => "These credentials do not match our records. Maybe try login with the page's system?",
+            ])->redirectTo(route('login'));
         }
         else{
             $userNew = User::create([

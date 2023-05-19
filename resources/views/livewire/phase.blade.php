@@ -39,7 +39,7 @@
                     <label for="project_id" class="block mb-2 text-sm font-medium text-gray-900">
                         Projects
                     </label>
-                    <select name="project_id" id="project_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="project_id">
+                    <select name="project_id" id="project_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="project_id" @if($editModal) disabled @else required @endif>>
                         <option value="" hidden selected></option>
                         @foreach ($projects as $project)
                             <option value="{{ $project->id }}">{{ $project->title }}</option>
@@ -63,7 +63,7 @@
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
             
-            @if ($editPhase)
+            @if ($editModal)
                 <x-jet-secondary-button
                     class="ml-3 bg-red-500 text-white hover:text-white hover:bg-red-700 active:bg-red-50"
                     wire:loading.attr="disabled" wire:click="deletePhase({{ $this->phase->id }})">
@@ -96,6 +96,16 @@
                 }).then(function () {
                     window.location.href = route;
                 });
+            })
+            
+            Livewire.on('new-phase-alert', function(message) {
+                Swal.fire({
+                    imageUrl: 'https://stickershop.line-scdn.net/stickershop/v1/product/7458249/LINEStorePC/main.png',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Be careful',
+                    text: message,
+                })
             })
         </script>
     @endpush

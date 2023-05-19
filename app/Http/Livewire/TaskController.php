@@ -24,7 +24,7 @@ class TaskController extends Component
 
     public $task;
     public $openModal = false;
-    public $editTask = false;
+    public $editModal = false;
 
     public $title;
     public $start_date;
@@ -47,15 +47,11 @@ class TaskController extends Component
         $rules = [
             "title" => ['required', 'string', 'max:255'],
             "start_date" => [
-                Rule::when($this->task && $this->start_date != $this->task->start_date, function () {
+                Rule::when(!$this->editModal, function () {
                     return ['required', 'date', 'after_or_equal:today'];
                 }),
             ],
-            "end_date" => [
-                Rule::when($this->task, function () {
-                    return ['required', 'date', 'after_or_equal:start_date'];
-                }),
-            ],
+            "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Task::phaseEndDate($this->phase_id)],
             "hour_estimate" => ['required', 'integer', 'between:0,100'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
@@ -133,16 +129,20 @@ class TaskController extends Component
         $this->end_date = "";
         $this->hour_estimate = "";
         $this->content = "";
-        $this->priority = null;
+        $this->priority = "";
+        $this->project_id = null;
+        $this->predecessor_task = "";
+        $this->user_id_assigned = "";
+        $this->predecessor_task = "";
     }
 
     public function newTask()
     {
         $this->resetValues();
         $this->resetValidation();
-        $this->editTask = false;
+        $this->editModal = false;
         $this->openModal = true;
-        $this->emit('new-task-alert', "Once you save your task, its start date won't be able to be changed to a previous date");
+        $this->emit('new-task-alert', "Once you save your task, its start and end date won't be able to be changed");
     }
 
     public function saveTask()
@@ -175,7 +175,7 @@ class TaskController extends Component
     public function editTaskNote($id)
     {
         $this->setValues($id);
-        $this->editTask = true;
+        $this->editModal = true;
         $this->openModal = true;
     }
 
@@ -186,8 +186,6 @@ class TaskController extends Component
         $this->task = Task::find($id);
         $this->task->user_id = Auth::user()->id;
         $this->task->title = $this->title;
-        $this->task->start_date = $this->start_date;
-        $this->task->end_date = $this->end_date;
         $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
@@ -200,13 +198,12 @@ class TaskController extends Component
         else{
             $this->task->predecessor_task = $this->predecessor_task;
         }
-        $this->task->save();
+        $this->task->update();
         $this->openModal = false;
     }
 
     public function deleteTask($id)
     {
-        $task = Task::find($id);
         $hasPredecessor = Task::where('predecessor_task', $id)->exists();
         if ($hasPredecessor)
         {
@@ -214,7 +211,7 @@ class TaskController extends Component
         } 
         else
         {
-            $task->destroy($id);
+            Task::destroy($id);
             $this->openModal = false;
             return redirect()->route('tasks');
         }

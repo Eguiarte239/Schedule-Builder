@@ -112,7 +112,7 @@
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
             
-            @if ($editTask)
+            @if ($editModal)
                 <x-jet-secondary-button
                     class="ml-3 bg-red-500 text-white hover:text-white hover:bg-red-700 active:bg-red-50"
                     wire:click="deleteTask({{ $this->task->id }})">

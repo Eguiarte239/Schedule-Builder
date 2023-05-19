@@ -18,7 +18,7 @@ class ProjectController extends Component
 
     public $project;
     public $openModal = false;
-    public $editProject = false;
+    public $editModal = false;
 
     public $title;
     public $start_date;
@@ -43,7 +43,12 @@ class ProjectController extends Component
     {
         $rules = [
             "title" => ['required', 'string', 'max:255'],
-            "start_date" => [Rule::excludeIf($this->project && $this->start_date == $this->project->start_date), 'required', 'date', 'after_or_equal:today'],
+            "start_date" => [
+                Rule::when(!$this->editModal, function () {
+                    return ['required', 'date', 'after_or_equal:today'];
+                }),
+            ],
+            "end_date" => ['required', 'date', 'after_or_equal:start_date'],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
             "hour_estimate" => ['required', 'integer', 'between:0,100'],
             "content" => ['required', 'string', 'max:500'],
@@ -99,15 +104,17 @@ class ProjectController extends Component
         $this->end_date = "";
         $this->hour_estimate = "";
         $this->content = "";
-        $this->priority = null;
+        $this->priority = "";
+        $this->leader_id_assigned = "";
     }
 
-    public function newNote()
+    public function newProject()
     {
         $this->resetValues();
         $this->resetValidation();
-        $this->editProject = false;
+        $this->editModal = false;
         $this->openModal = true;
+        $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed");
     }
 
     public function saveProject()
@@ -132,7 +139,7 @@ class ProjectController extends Component
     public function editProjectNote($id)
     {
         $this->setValues($id);
-        $this->editProject = true;
+        $this->editModal = true;
         $this->openModal = true;
     }
 
@@ -142,12 +149,10 @@ class ProjectController extends Component
         $this->project = Project::find($id);
         $this->project->user_id = Auth::user()->id;
         $this->project->title = $this->title;
-        $this->project->start_date = $this->start_date;
-        $this->project->end_date = $this->end_date;
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
-        $this->project->save();
+        $this->project->update();
         $this->openModal = false;
     }
 

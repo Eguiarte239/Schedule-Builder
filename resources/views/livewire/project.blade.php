@@ -4,7 +4,7 @@
             <div class="bg-white dark:bg-slate-400 overflow-hidden shadow-xl sm:rounded-lg p-6">
                 @can('assign-leader')
                     <div>
-                        <x-jet-button wire:click="newNote" class="mb-4">
+                        <x-jet-button wire:click="newProject" class="mb-4">
                             + New project
                         </x-jet-button>
                     </div>
@@ -35,7 +35,7 @@
                 <label for="leader_id_assigned" class="block mb-2 text-sm font-medium text-gray-900">
                     Users
                 </label>
-                <select name="leader_id_assigned" id="leader_id_assigned"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader_id_assigned">
+                <select name="leader_id_assigned" id="leader_id_assigned"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader_id_assigned" @if($editModal) disabled @else required @endif>>
                     <option value="" hidden selected></option>
                     @foreach ($users as $user)
                         @if ($user->auth()->id !== $user->id)
@@ -60,7 +60,10 @@
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
             
-            @if ($editProject)
+            @if ($editModal)
+                <x-slot name="title">
+                    Edit project
+                </x-slot>
                 <x-jet-secondary-button
                     class="ml-3 bg-red-500 text-white hover:text-white hover:bg-red-700 active:bg-red-50"
                     wire:loading.attr="disabled" wire:click="deleteProject({{ $this->project->id }})">
@@ -94,6 +97,16 @@
                 }).then(function () {
                     window.location.href = route;
                 });
+            })
+            
+            Livewire.on('new-project-alert', function(message) {
+                Swal.fire({
+                    imageUrl: 'https://stickershop.line-scdn.net/stickershop/v1/product/7458249/LINEStorePC/main.png',
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    title: 'Be careful',
+                    text: message,
+                })
             })
         </script>
     @endpush

@@ -19,7 +19,7 @@ class PhaseController extends Component
 
     public $phase;
     public $openModal = false;
-    public $editPhase = false;
+    public $editModal = false;
 
     public $title;
     public $start_date;
@@ -45,15 +45,11 @@ class PhaseController extends Component
         $rules = [
             "title" => ['required', 'string', 'max:255'],
             "start_date" => [
-                Rule::when($this->phase && $this->start_date != $this->phase->start_date, function () {
+                Rule::when(!$this->editModal, function () {
                     return ['required', 'date', 'after_or_equal:today'];
                 }),
             ],
-            "end_date" => [
-                Rule::when($this->phase, function () {
-                    return ['required', 'date', 'after_or_equal:start_date'];
-                }),
-            ],
+            "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Phase::projectEndDate($this->project_id)],
             "hour_estimate" => ['required', 'integer', 'min:1'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
@@ -114,15 +110,17 @@ class PhaseController extends Component
         $this->end_date = "";
         $this->hour_estimate = "";
         $this->content = "";
-        $this->priority = null;
+        $this->priority = "";
+        $this->project_id = "";
     }
 
     public function newPhase()
     {
         $this->resetValues();
         $this->resetValidation();
-        $this->editPhase = false;
+        $this->editModal = false;
         $this->openModal = true;
+        $this->emit('new-phase-alert', "Once you save your phase, its start and end date, and the project won't be able to be changed");
     }
 
     public function savePhase()
@@ -145,7 +143,7 @@ class PhaseController extends Component
     public function editPhaseNote($id)
     {
         $this->setValues($id);
-        $this->editPhase = true;
+        $this->editModal = true;
         $this->openModal = true;
     }
 
@@ -156,12 +154,10 @@ class PhaseController extends Component
         $this->phase = Phase::find($id);
         $this->phase->user_id = Auth::user()->id;
         $this->phase->title = $this->title;
-        $this->phase->start_date = $this->start_date;
-        $this->phase->end_date = $this->end_date;
         $this->phase->hour_estimate = $this->hour_estimate;
         $this->phase->content = $this->content;
         $this->phase->priority = $this->priority;
-        $this->phase->save();
+        $this->phase->update();
         $this->openModal = false;
     }
 

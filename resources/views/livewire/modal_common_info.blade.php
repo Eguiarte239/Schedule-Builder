@@ -27,7 +27,7 @@
         </label>
         <input wire:model="start_date" id="start_date" type="date"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required>
+            @if($editModal) disabled @else required @endif>
         <x-jet-input-error for="start_date"></x-jet-input-error>
     </div>
     <div>
@@ -36,7 +36,7 @@
         </label>
         <input wire:model="end_date" type="date" id="end_date"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required>
+            @if($editModal) disabled @else required @endif>
         <x-jet-input-error for="end_date"></x-jet-input-error>
     </div>
     <div>

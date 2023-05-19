@@ -67,4 +67,9 @@ class Phase extends Model
     {
         return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
+
+    public static function projectEndDate($project_id)
+    {
+        return Project::where('id', $project_id)->value('end_date');
+    }
 }
