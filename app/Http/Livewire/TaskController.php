@@ -8,6 +8,7 @@ use App\Models\Phase;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use App\Rules\EstimatedTaskHoursRule;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,7 @@ class TaskController extends Component
                 }),
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Task::phaseEndDate($this->phase_id)],
-            "hour_estimate" => ['required', 'integer', 'between:0,100'],
+            "hour_estimate" => ['required', 'integer',],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'project_id' => 'required',
@@ -64,6 +65,12 @@ class TaskController extends Component
             'predecessor_task' => 'required',
             'predecessor_task.*' => 'required|nullable|exists:tasks,id|in:No aplica',
         ];
+        if($this->editModal){
+            $rules['hour_estimate'][] = new EstimatedTaskHoursRule($this->phase_id, $this->hour_estimate, $this->editModal, $this->task->hour_estimate);
+        }
+        else{
+            $rules['hour_estimate'][] = new EstimatedTaskHoursRule($this->phase_id, $this->hour_estimate, $this->editModal, 0);
+        }
         
         return $rules;
     }
@@ -98,7 +105,6 @@ class TaskController extends Component
 
             $projects = Project::whereIn('id', $projectIds)->with('phase.task')->orderBy('order_position', 'asc')->where('title', 'like', '%'.$this->search.'%')->get();
         }
-
         $users = User::all();
         $predecessorTasks = Task::all();
 
@@ -131,6 +137,7 @@ class TaskController extends Component
         $this->content = "";
         $this->priority = "";
         $this->project_id = null;
+        $this->phase_id = null;
         $this->predecessor_task = "";
         $this->user_id_assigned = "";
         $this->predecessor_task = "";
@@ -182,7 +189,6 @@ class TaskController extends Component
     public function editTask($id)
     {
         $this->validate();
-
         $this->task = Task::find($id);
         $this->task->user_id = Auth::user()->id;
         $this->task->title = $this->title;

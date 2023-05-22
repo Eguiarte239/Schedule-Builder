@@ -12,16 +12,23 @@
     </x-slot>
 
     <x-slot name="content">
-        <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </div>
-
-        <div class="mt-5">
-            <x-jet-danger-button wire:click="confirmUserDeletion" wire:loading.attr="disabled">
-                {{ __('Delete Account') }}
-            </x-jet-danger-button>
-        </div>
-
+        @can('delete-user')
+            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200">
+                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+            </div>
+        @else
+            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200">
+                {{ __('This option is only available if you registered using the web app.') }}
+            </div>
+        @endcan
+        
+        @can('delete-user')
+            <div class="mt-5">
+                <x-jet-danger-button wire:click="confirmUserDeletion" wire:loading.attr="disabled">
+                    {{ __('Delete Account') }}
+                </x-jet-danger-button>
+            </div>
+        @endcan
         <!-- Delete User Confirmation Modal -->
         <x-jet-dialog-modal wire:model="confirmingUserDeletion">
             <x-slot name="title">

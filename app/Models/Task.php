@@ -80,10 +80,10 @@ class Task extends Model
     
     public static function phaseEstimatedHours($phase_id)
     {
-        return Phase::where('id', $phase_id)->sum('hour_estimate');
+        return Phase::where('id', $phase_id)->value('hour_estimate');
     }
 
-    public static function totalEstimatedHoursForPhase($phase_id)
+    public static function totalEstimatedHoursPerPhase($phase_id)
     {
         return self::where('phase_id', $phase_id)->sum('hour_estimate');
     }

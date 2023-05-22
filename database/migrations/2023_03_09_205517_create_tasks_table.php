@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable();
             $table->string('title');
             $table->text('content');
             $table->float('hour_estimate');
@@ -24,14 +24,15 @@ return new class extends Migration
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('phase_id');
-            $table->unsignedBigInteger('user_id_assigned');
+            $table->unsignedBigInteger('user_id_assigned')->nullable();
             $table->unsignedBigInteger('predecessor_task')->nullable();
             $table->boolean('is_finished')->default(false);
             $table->integer('order_position')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('phase_id')->references('id')->on('phases');
-            $table->foreign('user_id_assigned')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id_assigned')->references('id')->on('users')->onDelete('set null');
             $table->foreign('predecessor_task')->references('id')->on('tasks');
         });
     }

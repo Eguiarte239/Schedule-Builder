@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Phase;
 use App\Models\Project;
 use App\Models\User;
+use App\Rules\CurrentEstimatedHoursRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -50,12 +51,18 @@ class ProjectController extends Component
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
-            "hour_estimate" => ['required', 'integer', 'between:0,100'],
+            "hour_estimate" => ['required', 'integer', 'between:0,500',],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'leader_id_assigned' => 'required',
             'leader_id_assigned.*' => 'required|exists:users,id',
         ];
+
+        if($this->editModal){
+            if($this->project->phase()->exists()){
+                $rules['hour_estimate'][] = new CurrentEstimatedHoursRule($this->project->hour_estimate);
+            }
+        } 
         
         return $rules;
     }
@@ -114,7 +121,7 @@ class ProjectController extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
-        $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed");
+        $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases");
     }
 
     public function saveProject()

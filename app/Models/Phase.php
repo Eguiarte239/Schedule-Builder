@@ -72,4 +72,14 @@ class Phase extends Model
     {
         return Project::where('id', $project_id)->value('end_date');
     }
+
+    public static function projectEstimatedHours($project_id)
+    {
+        return Project::where('id', $project_id)->value('hour_estimate');
+    }
+
+    public static function totalEstimatedHoursPerProject($project_id)
+    {
+        return self::where('project_id', $project_id)->sum('hour_estimate');
+    }
 }

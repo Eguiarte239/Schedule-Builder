@@ -70,9 +70,19 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function projects()
+    {
+        return $this->hasMany(Project::class)->withoutGlobalScopes()->withoutDeleting();
+    }
+
+    public function phases()
+    {
+        return $this->hasMany(Phases::class)->withoutGlobalScopes()->withoutDeleting();
+    }
+
     public function tasks()
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Task::class)->withoutGlobalScopes()->withoutDeleting();
     }
 
     public function auth()

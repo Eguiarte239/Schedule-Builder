@@ -32,7 +32,7 @@
                 Responsible: {{ $task->user->name }}
             <br>
             @if($task->predecessor_task != null)
-                Predecessor task: {{ $task->predecessor_task }}
+                Predecessor task: {{ $task->predecessorTask->title }}
             @else
                 Predecessor task: NA
             @endif

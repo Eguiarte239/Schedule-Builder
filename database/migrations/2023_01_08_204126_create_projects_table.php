@@ -15,17 +15,18 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->nullable();
             $table->string('title');
             $table->text('content');
             $table->float('hour_estimate');
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
-            $table->unsignedBigInteger('leader_id_assigned');
+            $table->unsignedBigInteger('leader_id_assigned')->nullable();
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('leader_id_assigned')->references('id')->on('users');
+            $table->foreign('leader_id_assigned')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

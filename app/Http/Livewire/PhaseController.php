@@ -6,6 +6,8 @@ use App\Models\Phase;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use App\Rules\CurrentEstimatedHoursRule;
+use App\Rules\EstimatedPhaseHoursRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -50,12 +52,22 @@ class PhaseController extends Component
                 }),
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Phase::projectEndDate($this->project_id)],
-            "hour_estimate" => ['required', 'integer', 'min:1'],
+            "hour_estimate" => ['required', 'integer',],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'project_id' => 'required',
             'project_id.*' => 'required|exists:projects,id',
         ];
+
+        if($this->editModal){
+            $rules['hour_estimate'][] = new EstimatedPhaseHoursRule($this->project_id, $this->hour_estimate, $this->editModal, $this->phase->hour_estimate);
+            if($this->phase->task()->exists()){
+                $rules['hour_estimate'][] = new CurrentEstimatedHoursRule($this->phase->hour_estimate);
+            }
+        } 
+        else{
+            $rules['hour_estimate'][] = new EstimatedPhaseHoursRule($this->project_id, $this->hour_estimate, $this->editModal, 0);
+        }
         
         return $rules;
     }
@@ -120,7 +132,7 @@ class PhaseController extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
-        $this->emit('new-phase-alert', "Once you save your phase, its start and end date, and the project won't be able to be changed");
+        $this->emit('new-phase-alert', "Once you save your phase, its start and end date, and the project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned tasks");
     }
 
     public function savePhase()

@@ -25,6 +25,9 @@ class RoleSeeder extends Seeder
         $changePasswordPermission = Permission::create(['name' => 'change-password']);
         $changePasswordPermission->assignRole($jetstreamUser);
 
+        $deleteUserPermission = Permission::create(['name' => 'delete-user']);
+        $deleteUserPermission->assignRole($jetstreamUser);
+
         $assignUsersToProject = Permission::create(['name' => 'assign-leader']);
         $assignUsersToProject->assignRole($adminUser);
 
