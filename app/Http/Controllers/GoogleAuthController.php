@@ -18,11 +18,11 @@ class GoogleAuthController extends Controller
     {
         $user = Socialite::driver('google')->user();
         //$userExists = User::where('external_id', $user->id)->where('external_auth', 'google')->first();    
-        /*if (!strpos($user->getEmail(), '@alumnos.udg.mx')) {
+        if (!strpos($user->getEmail(), '@alumnos.udg.mx')) {
             return redirect('/register')->withErrors([
-                'email' => 'Solo se permiten correos electrónicos institucionales de la Universidad de Guadalajara.',
+                'email' => 'Only institutional emails from Universidad de Guadalajara are allowed.',
             ]);
-        }*/
+        }
         $userExists = User::where('email', $user->email)->first();
     
         if($userExists && $userExists->external_id === $user->id && $userExists->external_auth === 'google'){

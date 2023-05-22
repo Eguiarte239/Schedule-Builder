@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 
@@ -17,7 +18,7 @@ class CreateNewUser implements CreatesNewUsers
      *
      * @param  array<string, string>  $input
      */
-    public function create(array $input): User
+    public function create(array $input) : User
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -26,12 +27,19 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
+        // Verifica si el dominio del correo electrónico no es "alumnos.udg.mx"
+        if (!strpos($input['email'], '@alumnos.udg.mx')) {
+            throw ValidationException::withMessages([
+                'email' => ['Only institutional emails from Universidad de Guadalajara are allowed.'],
+            ])->redirectTo('/register');
+        }
+
         $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
-        
+
         $user->assignRole('jetstream-user');
 
         return $user;

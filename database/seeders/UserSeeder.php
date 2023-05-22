@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -17,10 +19,12 @@ class UserSeeder extends Seeder
     public function run()
     {
         $password = 'password';
-        User::create([
+        $user = User::create([
             'name' => 'admin',
             'email' => 'admin@example.com',
             'password' => Hash::make($password),
         ])->assignRole('jetstream-user', 'admin-user');
+        $user->markEmailAsVerified();
+        Event::dispatch(new Verified($user));
     }
 }
