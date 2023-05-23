@@ -1,5 +1,5 @@
 @if ($__data['phases'])
-    <div wire:sortable.item="{{ $phase->id }}" wire:key="phase-{{ $phase->id }}" class="mb-2 bg-white rounded-lg shadow-md p-2 border dark:bg-slate-600">
+    <div wire:sortable.item="{{ $phase->id }}" wire:key="phase-{{ $phase->id }}" class="mb-2 bg-neutral-50 rounded-lg shadow-md p-2 border dark:bg-slate-600">
         <div class="px-2" wire:sortable.handle>
             <div class="flex flex-row justify-between">
                 <div class="font-bold text-xl dark:text-white mb-2" >
@@ -23,7 +23,7 @@
                     <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: {{ $this->getProgressPercentage($phase->id) }}"> {{ $this->getProgressPercentage($phase->id) }}</div>
                 </div>
             @endif
-            <p class="mb-3 text-lg text-gray-500 md:text-base dark:text-white">
+            <p class="mb-3 text-lg text-gray-800 md:text-base dark:text-white">
                 {{ $phase->content }}
                 <br>
                 <span class="bg-blue-100 text-blue-800 text-ms font-medium inline-flex px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">

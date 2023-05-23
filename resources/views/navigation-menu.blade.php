@@ -10,7 +10,7 @@
                         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Schedule-Builder</span>
                     </a>
                     <div class="flex items-center pl-6">   
-                        <ul class="rounded-lg {{ request()->routeIs('projects*') ? 'bg-cyan-700' : '' }}">
+                        <ul class="rounded-lg {{ request()->routeIs('projects*') ? 'bg-cyan-200 dark:bg-cyan-700' : '' }}">
                             <li>
                                 <a href="{{ route('projects') }}" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -20,7 +20,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <ul class="rounded-lg {{ request()->routeIs('phases*') ? 'bg-cyan-700' : '' }}">
+                        <ul class="rounded-lg {{ request()->routeIs('phases*') ? 'bg-cyan-200 dark:bg-cyan-700' : '' }}">
                             <li>
                                 <a href="{{ route('phases') }}" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -30,7 +30,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <ul class="rounded-lg {{ request()->routeIs('tasks*') ? 'bg-cyan-700' : '' }}">
+                        <ul class="rounded-lg {{ request()->routeIs('tasks*') ? 'bg-cyan-200 dark:bg-cyan-700' : '' }}">
                             <li>
                                 <a href="{{ route('tasks') }}" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -105,7 +105,7 @@
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-neutral-200 text-sm leading-4 font-medium rounded-md text-gray-500 bg-neutral-50 hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition">
                                         {{ Auth::user()->name }}
 
                                         <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
