@@ -126,6 +126,14 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
+                            <x-jet-dropdown-link href="https://eworldfulfillment.com/wp-content/uploads/2021/01/Privacy-Policy-Example-Template.pdf" target="_blank">
+                                {{ __('Privacy Policy') }}
+                            </x-jet-dropdown-link>
+
+                            <x-jet-dropdown-link href="https://sorenson.com/wp-content/uploads/2022/12/MAV4-ServiceTermsAndConditions-12-6-2022-2.pdf" target="_blank">
+                                {{ __('Service Terms and Conditions') }}
+                            </x-jet-dropdown-link>
+
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-jet-dropdown-link href="{{ route('api-tokens.index') }}">
                                     {{ __('API Tokens') }}
