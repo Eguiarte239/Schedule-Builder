@@ -10,38 +10,18 @@ use App\Models\Task;
 use App\Models\User;
 use App\Rules\EstimatedTaskHoursRule;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class TaskController extends Component
+class TaskController extends ParentController
 {
-    use AuthorizesRequests, WithPagination;
-
-    protected $middleware = ['web', 'livewire:protect'];
-
     public $task;
-    public $openModal = false;
-    public $editModal = false;
 
-    public $title;
-    public $start_date;
-    public $end_date;
-    public $hour_estimate;
-    public $content;
-    public $priority;
     public $project_id;
     public $phase_id;
     public $user_id_assigned;
     public $predecessor_task;
-
-    public $search = '';
-
-
-    protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected function rules()
     {
