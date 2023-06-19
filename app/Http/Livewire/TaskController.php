@@ -134,18 +134,14 @@ class TaskController extends ParentController
 
     public function saveTask()
     {
+        $class_type = get_class($this);
         $this->validate();
         if(isset($this->user_id_assigned)){
             User::find(intval($this->user_id_assigned))->assignRole('employee-user');
         }
         $this->task = new Task();
         $this->task->user_id = Auth::user()->id;
-        $this->task->title = $this->title;
-        $this->task->start_date = $this->start_date;
-        $this->task->end_date = $this->end_date;
-        $this->task->hour_estimate = $this->hour_estimate;
-        $this->task->content = $this->content;
-        $this->task->priority = $this->priority;
+        $this->save($class_type, $this->task);
         $this->task->project_id = $this->project_id;
         $this->task->phase_id = $this->phase_id;
         $this->task->user_id_assigned = $this->user_id_assigned;

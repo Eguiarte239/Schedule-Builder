@@ -14,7 +14,7 @@ use Illuminate\Validation\Rule;
 class PhaseController extends ParentController
 {
     public $phase;
-    
+
     public $project_id;
 
     protected function rules()
@@ -112,16 +112,11 @@ class PhaseController extends ParentController
 
     public function savePhase()
     {
+        $class_type = get_class($this);
         $this->validate();
-
         $this->phase = new Phase();
         $this->phase->user_id = Auth::user()->id;
-        $this->phase->title = $this->title;
-        $this->phase->start_date = $this->start_date;
-        $this->phase->end_date = $this->end_date;
-        $this->phase->hour_estimate = $this->hour_estimate;
-        $this->phase->content = $this->content;
-        $this->phase->priority = $this->priority;
+        $this->save($class_type, $this->phase);
         $this->phase->project_id = $this->project_id;
         $this->phase->save();
         $this->openModal = false;

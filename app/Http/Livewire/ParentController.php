@@ -31,4 +31,36 @@ class ParentController extends Component
     ];
 
     protected $listeners = ['refreshComponent' => '$refresh'];
+
+    //instance variable takes the instance type that was sended (project, phase or task)
+    public function save($class_type, $instance){
+        switch($class_type){
+            case ProjectController::class:
+                $instance->title = $this->title;
+                $instance->start_date = $this->start_date;
+                $instance->end_date = $this->end_date;
+                $instance->hour_estimate = $this->hour_estimate;
+                $instance->content = $this->content;
+                $instance->priority = $this->priority;
+                break;
+            case PhaseController::class:
+                $instance->title = $this->title;
+                $instance->start_date = $this->start_date;
+                $instance->end_date = $this->end_date;
+                $instance->hour_estimate = $this->hour_estimate;
+                $instance->content = $this->content;
+                $instance->priority = $this->priority;
+                break;
+            case TaskController::class:
+                $instance->title = $this->title;
+                $instance->start_date = $this->start_date;
+                $instance->end_date = $this->end_date;
+                $instance->hour_estimate = $this->hour_estimate;
+                $instance->content = $this->content;
+                $instance->priority = $this->priority;
+                break;
+            default:
+                break;
+        }
+    }
 }
