@@ -101,14 +101,13 @@ class ProjectController extends ParentController
 
     public function saveProject()
     {
-        $class_type = get_class($this);
         $this->validate();
         if(isset($this->leader_id_assigned)){
             User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
         }
         $this->project = new Project();
         $this->project->user_id = Auth::user()->id;
-        $this->save($class_type, $this->project);
+        $this->save($this->project);
         $this->project->leader_id_assigned = $this->leader_id_assigned;
         $this->project->save();
         $this->openModal = false;

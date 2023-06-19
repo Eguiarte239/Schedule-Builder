@@ -112,11 +112,10 @@ class PhaseController extends ParentController
 
     public function savePhase()
     {
-        $class_type = get_class($this);
         $this->validate();
         $this->phase = new Phase();
         $this->phase->user_id = Auth::user()->id;
-        $this->save($class_type, $this->phase);
+        $this->save($this->phase);
         $this->phase->project_id = $this->project_id;
         $this->phase->save();
         $this->openModal = false;
