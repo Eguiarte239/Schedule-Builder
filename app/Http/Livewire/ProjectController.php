@@ -66,36 +66,24 @@ class ProjectController extends ParentController
         return view('livewire.project', ['projects' => $projects, 'users' => $users])->layout('layouts.app');
     }
 
-    public function setValues($id)
+    public function setProjectValues($id)
     {
         $this->project = Project::find($id);
-        $this->title = $this->project->title;
-        $this->start_date = $this->project->start_date;
-        $this->end_date = $this->project->end_date;
-        $this->hour_estimate = $this->project->hour_estimate;
-        $this->content = $this->project->content;
-        $this->priority = $this->project->priority;
+        $this->setGeneralValues($this->project);
         $this->leader_id_assigned = $this->project->leader_id_assigned;
     }
 
-    public function resetValues()
-    {
-        $this->project = new Project();
-        $this->title = "";
-        $this->start_date = now()->format('Y-m-d');
-        $this->end_date = "";
-        $this->hour_estimate = "";
-        $this->content = "";
-        $this->priority = "";
+    public function resetProjectValues()
+    {   
+        $this->resetGeneralValues();
         $this->leader_id_assigned = "";
     }
 
     public function newProject()
     {
-        $this->resetValues();
+        $this->resetProjectValues();
         $this->resetValidation();
-        $this->editModal = false;
-        $this->openModal = true;
+        $this->newInstance();
         $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases");
     }
 
@@ -107,7 +95,7 @@ class ProjectController extends ParentController
         }
         $this->project = new Project();
         $this->project->user_id = Auth::user()->id;
-        $this->save($this->project);
+        $this->saveInstanceGeneralValues($this->project);
         $this->project->leader_id_assigned = $this->leader_id_assigned;
         $this->project->save();
         $this->openModal = false;
@@ -115,7 +103,7 @@ class ProjectController extends ParentController
 
     public function editProjectNote($id)
     {
-        $this->setValues($id);
+        $this->setProjectValues($id);
         $this->editModal = true;
         $this->openModal = true;
     }
@@ -125,10 +113,7 @@ class ProjectController extends ParentController
         $this->validate();
         $this->project = Project::find($id);
         $this->project->user_id = Auth::user()->id;
-        $this->project->title = $this->title;
-        $this->project->hour_estimate = $this->hour_estimate;
-        $this->project->content = $this->content;
-        $this->project->priority = $this->priority;
+        $this->editInstanceGeneralValues($this->project);
         $this->project->update();
         $this->openModal = false;
     }

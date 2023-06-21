@@ -91,15 +91,10 @@ class TaskController extends ParentController
         return view('livewire.task', ['projects' => $projects, 'users' => $users, 'predecessorTasks' => $predecessorTasks])->layout('layouts.app');
     }
 
-    public function setValues($id)
+    public function setTaskValues($id)
     {
         $this->task = Task::find($id);
-        $this->title = $this->task->title;
-        $this->start_date = $this->task->start_date;
-        $this->end_date = $this->task->end_date;
-        $this->hour_estimate = $this->task->hour_estimate;
-        $this->content = $this->task->content;
-        $this->priority = $this->task->priority;
+        $this->setGeneralValues($this->task);
         $this->project_id = $this->task->project_id;
         $this->phase_id = $this->task->phase_id;
         $this->predecessor_task = $this->task->predecessor_task;
@@ -107,15 +102,9 @@ class TaskController extends ParentController
         $this->predecessor_task = $this->task->predecessor_task;
     }
 
-    public function resetValues()
+    public function resetTaskValues()
     {
-        $this->task = new Task();
-        $this->title = "";
-        $this->start_date = now()->format('Y-m-d');
-        $this->end_date = "";
-        $this->hour_estimate = "";
-        $this->content = "";
-        $this->priority = "";
+        $this->resetGeneralValues();
         $this->project_id = null;
         $this->phase_id = null;
         $this->predecessor_task = "";
@@ -125,10 +114,9 @@ class TaskController extends ParentController
 
     public function newTask()
     {
-        $this->resetValues();
+        $this->resetTaskValues();
         $this->resetValidation();
-        $this->editModal = false;
-        $this->openModal = true;
+        $this->newInstance();
         $this->emit('new-task-alert', "Once you save your task, its start and end date won't be able to be changed");
     }
 
@@ -140,7 +128,7 @@ class TaskController extends ParentController
         }
         $this->task = new Task();
         $this->task->user_id = Auth::user()->id;
-        $this->save($this->task);
+        $this->saveInstanceGeneralValues($this->task);
         $this->task->project_id = $this->project_id;
         $this->task->phase_id = $this->phase_id;
         $this->task->user_id_assigned = $this->user_id_assigned;
@@ -156,7 +144,7 @@ class TaskController extends ParentController
 
     public function editTaskNote($id)
     {
-        $this->setValues($id);
+        $this->setTaskValues($id);
         $this->editModal = true;
         $this->openModal = true;
     }
@@ -166,10 +154,7 @@ class TaskController extends ParentController
         $this->validate();
         $this->task = Task::find($id);
         $this->task->user_id = Auth::user()->id;
-        $this->task->title = $this->title;
-        $this->task->hour_estimate = $this->hour_estimate;
-        $this->task->content = $this->content;
-        $this->task->priority = $this->priority;
+        $this->editInstanceGeneralValues($this->task);
         $this->task->project_id = $this->project_id;
         $this->task->phase_id = $this->phase_id;
         $this->task->user_id_assigned = $this->user_id_assigned;

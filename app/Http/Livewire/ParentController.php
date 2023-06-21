@@ -32,8 +32,31 @@ class ParentController extends Component
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
+    public function setGeneralValues($instance){
+        $this->title = $instance->title;
+        $this->start_date = $instance->start_date;
+        $this->end_date = $instance->end_date;
+        $this->hour_estimate = $instance->hour_estimate;
+        $this->content = $instance->content;
+        $this->priority = $instance->priority;
+    }
+
+    public function resetGeneralValues(){
+        $this->title = "";
+        $this->start_date = now()->format('Y-m-d');
+        $this->end_date = "";
+        $this->hour_estimate = "";
+        $this->content = "";
+        $this->priority = "";
+    }
+
+    public function newInstance(){
+        $this->editModal = false;
+        $this->openModal = true;
+    }
+
     //instance variable takes the instance type that was sended (project, phase or task)
-    public function save($instance){
+    public function saveInstanceGeneralValues($instance){
         $instance->title = $this->title;
         $instance->start_date = $this->start_date;
         $instance->end_date = $this->end_date;
@@ -41,4 +64,12 @@ class ParentController extends Component
         $instance->content = $this->content;
         $instance->priority = $this->priority;
     }
+
+    public function editInstanceGeneralValues($instance){
+        $instance->title = $this->title;
+        $instance->hour_estimate = $this->hour_estimate;
+        $instance->content = $this->content;
+        $instance->priority = $this->priority;
+    }
+
 }
