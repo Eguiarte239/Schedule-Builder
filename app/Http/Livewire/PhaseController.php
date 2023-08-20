@@ -80,7 +80,7 @@ class PhaseController extends Component
 
     public function render()
     {
-        $projects = Project::where('leader_id_assigned', Auth::user()->id)->get();
+        $projects = Project::where('leader', Auth::user()->id)->get();
         
         $phases = Phase::with('project')
                     ->where('user_id', Auth::user()->id)

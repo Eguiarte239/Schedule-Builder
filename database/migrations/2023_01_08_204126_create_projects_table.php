@@ -22,10 +22,10 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent']);
-            $table->unsignedBigInteger('leader_id_assigned')->nullable();
+            $table->unsignedBigInteger('leader')->nullable();
             $table->integer('order_position')->nullable();
             $table->timestamps();
-            $table->foreign('leader_id_assigned')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('leader')->references('id')->on('users')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }

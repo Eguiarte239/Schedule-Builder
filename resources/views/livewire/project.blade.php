@@ -10,6 +10,16 @@
                     </div>
                 @endcan
 
+                <div>
+                    <div>
+                        <label for="Ask DB" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{$response}}</label>
+                        <input wire:model.defer="ask" type="text" id="Ask DB" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ask something" required>
+                    </div>
+                    <x-jet-button wire:click="askDB" class="mt-4 mb-4">
+                        Preguntar
+                    </x-jet-button>
+                </div>
+
                 @include('livewire.search_bar', ['search' => $search, 'tasks' => false])
 
                 <div class="grid gap-2 md:grid-cols-4" wire:sortable="updateTaskOrder">
@@ -32,10 +42,10 @@
         <x-slot name="content">
             @include('livewire.modal_common_info')
             <div class="mb-4">
-                <label for="leader_id_assigned" class="block mb-2 text-sm font-medium text-gray-900">
+                <label for="leader" class="block mb-2 text-sm font-medium text-gray-900">
                     Users
                 </label>
-                <select name="leader_id_assigned" id="leader_id_assigned"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader_id_assigned" @if($editModal) disabled @else required @endif>>
+                <select name="leader" id="leader"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader" @if($editModal) disabled @else required @endif>>
                     <option value="" hidden selected></option>
                     @foreach ($users as $user)
                         @if ($user->auth()->id !== $user->id)
@@ -43,7 +53,7 @@
                         @endif
                     @endforeach
                 </select>
-                <x-jet-input-error for="leader_id_assigned"></x-jet-input-error>
+                <x-jet-input-error for="leader"></x-jet-input-error>
             </div>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
