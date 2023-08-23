@@ -42,7 +42,7 @@ class Project extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'leader_id_assigned');
+        return $this->belongsTo(User::class, 'leader');
     }
 
     public function phase()

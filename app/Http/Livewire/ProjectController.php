@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Rules\CurrentEstimatedHoursRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -27,7 +28,9 @@ class ProjectController extends Component
     public $hour_estimate;
     public $content;
     public $priority;
-    public $leader_id_assigned;
+    public $leader;
+    public $ask;
+    public $response;
 
     public $search = '';
 
@@ -54,8 +57,8 @@ class ProjectController extends Component
             "hour_estimate" => ['required', 'integer', 'between:0,500',],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
-            'leader_id_assigned' => 'required',
-            'leader_id_assigned.*' => 'required|exists:users,id',
+            'leader' => 'required',
+            'leader.*' => 'required|exists:users,id',
         ];
 
         if($this->editModal){
@@ -77,7 +80,7 @@ class ProjectController extends Component
     {
         return Project::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
-                  ->orWhere('leader_id_assigned', 'LIKE', '%'.Auth::user()->id.'%');
+                  ->orWhere('leader', 'LIKE', '%'.Auth::user()->id.'%');
         })
         ->where('title', 'like', '%'.$this->search.'%')
         ->orderBy('order_position', 'asc')
@@ -88,7 +91,13 @@ class ProjectController extends Component
     {
         $projects = $this->projects;
         $users = User::all();
-        return view('livewire.project', ['projects' => $projects, 'users' => $users])->layout('layouts.app');
+        $response = $this->response;
+        return view('livewire.project', ['projects' => $projects, 'users' => $users, 'response' => $response])->layout('layouts.app');
+    }
+
+    public function askDB(){
+        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        $this->response = DB::ask($this->ask);
     }
 
     public function setValues($id)
@@ -100,7 +109,7 @@ class ProjectController extends Component
         $this->hour_estimate = $this->project->hour_estimate;
         $this->content = $this->project->content;
         $this->priority = $this->project->priority;
-        $this->leader_id_assigned = $this->project->leader_id_assigned;
+        $this->leader = $this->project->leader;
     }
 
     public function resetValues()
@@ -112,7 +121,7 @@ class ProjectController extends Component
         $this->hour_estimate = "";
         $this->content = "";
         $this->priority = "";
-        $this->leader_id_assigned = "";
+        $this->leader = "";
     }
 
     public function newProject()
@@ -127,8 +136,8 @@ class ProjectController extends Component
     public function saveProject()
     {
         $this->validate();
-        if(isset($this->leader_id_assigned)){
-            User::find(intval($this->leader_id_assigned))->assignRole('leader-user');
+        if(isset($this->leader)){
+            User::find(intval($this->leader))->assignRole('leader-user');
         }
         $this->project = new Project();
         $this->project->user_id = Auth::user()->id;
@@ -138,7 +147,7 @@ class ProjectController extends Component
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
-        $this->project->leader_id_assigned = $this->leader_id_assigned;
+        $this->project->leader = $this->leader;
         $this->project->save();
         $this->openModal = false;
     }

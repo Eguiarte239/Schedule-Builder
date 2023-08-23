@@ -19,6 +19,6 @@
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^36.0.0",
-        "sweetalert2": "^11.7.5"
+        "sweetalert2": "^11.6.13"
     }
 }
