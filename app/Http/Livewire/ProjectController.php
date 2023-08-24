@@ -97,6 +97,7 @@ class ProjectController extends Component
 
     public function askDB(){
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        //$this->response = DB::askForQuery($this->ask);
         $this->response = DB::ask($this->ask);
     }
 

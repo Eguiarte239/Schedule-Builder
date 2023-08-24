@@ -8,7 +8,7 @@
         "php": "^8.0.2",
         "beyondcode/laravel-ask-database": "^1.0",
         "doctrine/dbal": "^3.5",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.7",
         "intervention/image": "^2.7",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.14",
@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
+        "openai-php/client": "^0.3.5",
         "realrashid/sweet-alert": "^7.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-permission": "^5.9"
