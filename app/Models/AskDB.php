@@ -16,20 +16,45 @@ class AskDB extends Model
 
     // protected string $connection;
 
-    public static function getSQLQuery($question)
+    public static function ask($question): string
     {
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
 
+        $query = AskDB::getSQLQuery($question);
+        $result = json_encode(AskDB::getQueryResult($query));
+
+        $prompt = (string) view('ask-database::prompts.answer', [
+        'question' => $question,
+        'result' => $result,
+        ]);
+
+        $answer = AskDB::queryOpenAi($client, $prompt);
+
+        return $answer;
+    }
+
+    public static function getSQLQuery($question)
+    {
+        $yourApiKey = env("OPENAI_API_KEY");
+        $client = OpenAI::client($yourApiKey);
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
-        $prompt = (string) view('ask-database::prompts.example', [
-        'question' => $question,
+        $prompt = (string) view('ask-database::prompts.sql-query', [
+        'question' => $question,  
         'tables' => $tables,
         ]);
 
+        $query = AskDB::queryOpenAi($client, $prompt);
+        AskDB::ensureQueryIsSafe($query);
+
+        return $query;
+    }
+
+    protected static function queryOpenAi($client, $prompt)
+    {
         $result = $client->completions()->create([
             'model' => 'text-davinci-003',
             'prompt' => $prompt,
@@ -38,12 +63,11 @@ class AskDB extends Model
         ]);
  
         $query = $result['choices'][0]['text']; 
-        AskDB::ensureQueryIsSafe($query);
 
         return $query;
     }
 
-    protected function ensureQueryIsSafe(string $query): void
+    protected static function ensureQueryIsSafe(string $query): void
     {
         if (! env('STRICT_MODE')) {
             return;
@@ -54,13 +78,12 @@ class AskDB extends Model
         throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
     }
 
-    protected function evaluateQuery(string $query): object
+    protected static function getQueryResult(string $query): array
     {
-        dd(DB::connection()->select(AskDB::getRawQuery($query))[0] ?? new \stdClass());
-        return DB::connection()->select(AskDB::getRawQuery($query))[0] ?? new \stdClass();
+        return DB::connection()->select($query);
     }
 
-    protected function getRawQuery(string $query): string
+    protected static function getRawQuery(string $query): string
     {
         if (version_compare(app()->version(), '10.0', '<')) {
             /* @phpstan-ignore-next-line */
