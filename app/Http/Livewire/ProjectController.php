@@ -80,7 +80,7 @@ class ProjectController extends Component
     {
         return Project::where(function ($query) {
             $query->where('user_id', Auth::user()->id)
-                  ->orWhere('leader', 'LIKE', '%'.Auth::user()->id.'%');
+                  ->orWhere('leader_id', 'LIKE', '%'.Auth::user()->id.'%');
         })
         ->where('title', 'like', '%'.$this->search.'%')
         ->orderBy('order_position', 'asc')
@@ -110,7 +110,7 @@ class ProjectController extends Component
         $this->hour_estimate = $this->project->hour_estimate;
         $this->content = $this->project->content;
         $this->priority = $this->project->priority;
-        $this->leader = $this->project->leader;
+        $this->leader = $this->project->leader_id;
     }
 
     public function resetValues()
@@ -148,7 +148,7 @@ class ProjectController extends Component
         $this->project->hour_estimate = $this->hour_estimate;
         $this->project->content = $this->content;
         $this->project->priority = $this->priority;
-        $this->project->leader = $this->leader;
+        $this->project->leader_id = $this->leader;
         $this->project->save();
         $this->openModal = false;
     }
