@@ -52,7 +52,7 @@
                 <select name="project_id" id="project_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="project_id">
                     <option value="" hidden selected></option>
                     @foreach ($projects as $project)
-                        @if ($project->leader === auth()->id())
+                        @if ($project->leader_id === auth()->id())
                             <option value="{{ $project->id }}">{{ $project->title }}</option>
                         @endif
                     @endforeach

@@ -26,5 +26,13 @@ class UserSeeder extends Seeder
         ])->assignRole('jetstream-user', 'admin-user');
         $user->markEmailAsVerified();
         Event::dispatch(new Verified($user));
+
+        $user = User::create([
+            'name' => 'employee',
+            'email' => 'employee@example.com',
+            'password' => Hash::make($password),
+        ])->assignRole('jetstream-user', 'employee-user');
+        $user->markEmailAsVerified();
+        Event::dispatch(new Verified($user));
     }
 }
