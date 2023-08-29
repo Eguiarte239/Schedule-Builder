@@ -26,7 +26,7 @@ class AskDB extends Model
         $query = AskDB::getSQLQuery($question);
         $result = json_encode(AskDB::getQueryResult($query));
 
-        $prompt = (string) view('ask-database::prompts.answer', [
+        $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
         ]);
@@ -42,7 +42,7 @@ class AskDB extends Model
         $client = OpenAI::client($yourApiKey);
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
-        $prompt = (string) view('ask-database::prompts.sql-query', [
+        $prompt = (string) view('prompts.sql-query', [
         'question' => $question,  
         'tables' => $tables,
         ]);
