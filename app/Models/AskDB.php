@@ -24,12 +24,16 @@ class AskDB extends Model
         $client = OpenAI::client($yourApiKey);
 
         $query = AskDB::getSQLQuery($question);
-        $result = json_encode(AskDB::getQueryResult($query));
+        //dd($query);
+        //$query = str_replace(["\t", "\n", "\r"], '', $query);
+
+        $result = json_encode(AskDB::getQueryResult($query));        
 
         $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
         ]);
+        $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
         $answer = AskDB::queryOpenAi($client, $prompt);
 
@@ -38,14 +42,16 @@ class AskDB extends Model
 
     public static function getSQLQuery($question)
     {
+        $table_list = ['phases', 'projects', 'tasks', 'users'];
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
-        $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
+        //$tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
         $prompt = (string) view('prompts.sql-query', [
         'question' => $question,  
-        'tables' => $tables,
+        'tables' => $table_list,
         ]);
+        $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
         $query = AskDB::queryOpenAi($client, $prompt);
         AskDB::ensureQueryIsSafe($query);

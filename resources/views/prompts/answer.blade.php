@@ -1,1 +1,1 @@
-Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer.
+Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer. If you get an empty array, it means that there is no answer to the question.

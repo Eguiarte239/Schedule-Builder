@@ -1,9 +1,11 @@
-Given the following question: {{ $question }}, make a valid SQL query to answer the question.
+Given the following question: {{ $question }}, make a executable SQL query to answer the question.
 Only use the following tables and columns:
 
 @foreach($tables as $table)
-Table: "{{ $table->getName() }}" has columns:
-@foreach(Schema::getColumnListing($table->getName()) as $column)
-    Column name: "{{ $column }}". (Data Type: {{ Schema::getColumnType($table->getName(), $column) }},)
+Table: "{{ $table}}" has columns:
+@foreach(Schema::getColumnListing($table) as $column)
+    Column name: "{{ $column }}". (Data Type: {{ Schema::getColumnType($table, $column) }},)
 @endforeach
 @endforeach
+
+Return only the SQL Query.
