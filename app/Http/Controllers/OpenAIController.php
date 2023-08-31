@@ -17,7 +17,7 @@ class OpenAIController extends Controller
         $client = OpenAI::client($yourApiKey);
 
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
-        $question = 'Dame todos los proyectos con sus fases y los líderes de cada proyecto';
+        $question = 'How many projects are there';
         // Initialize the response  
         $full_response = "";  
         

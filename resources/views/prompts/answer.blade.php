@@ -1,0 +1,1 @@
+Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer.
