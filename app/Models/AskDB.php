@@ -43,6 +43,10 @@ class AskDB extends Model
     public static function getSQLQuery($question)
     {
         $table_list = ['phases', 'projects', 'tasks', 'users'];
+        /* 'phases' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'is_finished'], 
+            'projects' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'leader_id'],
+            'tasks' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'project_id', 'phase_id', 'user_id_assigned', 'predecessor_task', 'is_finished'],
+            'users' => ['id', 'name', 'email'] */
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
         //$tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
@@ -61,14 +65,22 @@ class AskDB extends Model
 
     protected static function queryOpenAi($client, $prompt)
     {
-        $result = $client->completions()->create([
+        /* $result = $client->completions()->create([
             'model' => 'text-davinci-003',
             'prompt' => $prompt,
             'max_tokens' => 300,
             'top_p' => 1,
+        ]); */
+        $result = $client->chat()->create([
+            'model' => 'gpt-3.5-turbo',
+            'temperature' => 0.2,
+            'frequency_penalty' => 0,
+            'max_tokens' => 300,
+            'top_p' => 1,
+            'messages' => [['role' => 'user', 'content' => $prompt]]
         ]);
  
-        $query = $result['choices'][0]['text']; 
+        $query = $result['choices'][0]['message']['content']; 
 
         return $query;
     }
@@ -80,7 +92,7 @@ class AskDB extends Model
         }
 
         $query = strtolower($query);
-        $forbiddenWords = ['insert', 'update', 'delete', 'alter', 'drop', 'truncate', 'create', 'replace'];
+        $forbiddenWords = ['insert', 'update', 'delete', 'alter', 'drop', 'truncate', 'create', 'replace', 'schema', 'password', 'passwords', 'version', 'host', 'dump', 'debug', 'script', 'cookie', 'cookies', 'session'];
         throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
     }
 
