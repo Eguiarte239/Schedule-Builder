@@ -27,7 +27,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id_assigned')->nullable();
             $table->unsignedBigInteger('predecessor_task')->nullable();
             $table->boolean('is_finished')->default(false);
-            $table->integer('order_position')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('phase_id')->references('id')->on('phases');

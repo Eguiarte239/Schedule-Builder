@@ -93,7 +93,7 @@ class TaskController extends Component
                     ->pluck('project_id');
 
         $projects = Project::whereIn('id', $projectIds)->with(['phase.task' => function($query) use ($user) {
-            $query->where('user_id', $user->id)->orWhere('user_id_assigned', 'LIKE', '%'.$user->id.'%')->orderBy('order_position', 'asc');
+            $query->where('user_id', $user->id)->orWhere('user_id_assigned', 'LIKE', '%'.$user->id.'%')->orderBy('id', 'asc');
         }])->where('title', 'like', '%'.$this->search.'%')->get();
 
         $adminUsers = User::role('admin-user')->get();
@@ -103,7 +103,7 @@ class TaskController extends Component
                     ->groupBy('project_id')
                     ->pluck('project_id');
 
-            $projects = Project::whereIn('id', $projectIds)->with('phase.task')->orderBy('order_position', 'asc')->where('title', 'like', '%'.$this->search.'%')->get();
+            $projects = Project::whereIn('id', $projectIds)->with('phase.task')->orderBy('id', 'asc')->where('title', 'like', '%'.$this->search.'%')->get();
         }
         $users = User::all();
         $predecessorTasks = Task::all();
@@ -247,16 +247,6 @@ class TaskController extends Component
             }
             $this->task->is_finished = !$this->task->is_finished;
             $this->task->save();
-        }
-    }
-
-    public function updateTaskOrder($items)
-    {
-        foreach($items as $item)
-        {
-            $task = Task::find($item['value']);
-            $task->order_position = $item['order'];
-            $task->save();
         }
     }
 }

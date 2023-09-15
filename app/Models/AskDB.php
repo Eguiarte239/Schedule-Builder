@@ -75,8 +75,7 @@ class AskDB extends Model
             'model' => 'gpt-3.5-turbo',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
-            'max_tokens' => 300,
-            'top_p' => 1,
+            'max_tokens' => 1200,
             'messages' => [['role' => 'user', 'content' => $prompt]]
         ]);
  

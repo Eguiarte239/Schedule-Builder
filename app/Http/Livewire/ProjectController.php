@@ -84,7 +84,7 @@ class ProjectController extends Component
                   ->orWhere('leader_id', 'LIKE', '%'.Auth::user()->id.'%');
         })
         ->where('title', 'like', '%'.$this->search.'%')
-        ->orderBy('order_position', 'asc')
+        ->orderBy('id', 'asc')
         ->get();        
     }
 
@@ -183,16 +183,6 @@ class ProjectController extends Component
         }
         else{
             $this->emit('alert', "You can't delete a project that already has phases assigned", route('projects'));
-        }
-    }
-
-    public function updateTaskOrder($items)
-    {
-        foreach($items as $item)
-        {
-            $project = Project::find($item['value']);
-            $project->order_position = $item['order'];
-            $project->save();
         }
     }
 

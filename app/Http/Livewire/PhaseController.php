@@ -52,7 +52,7 @@ class PhaseController extends Component
                 }),
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Phase::projectEndDate($this->project_id)],
-            "hour_estimate" => ['required', 'integer',],
+            "hour_estimate" => ['required', 'integer'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'project_id' => 'required',
@@ -85,7 +85,7 @@ class PhaseController extends Component
         $phases = Phase::with('project')
                     ->where('user_id', Auth::user()->id)
                     ->where('title', 'like', '%'.$this->search.'%')
-                    ->orderBy('order_position', 'asc')
+                    ->orderBy('id', 'asc')
                     ->get();
         
         $adminUsers = User::role('admin-user')->get();
@@ -93,7 +93,7 @@ class PhaseController extends Component
             $projects = Project::all();
             $phases = Phase::with('project')
                     ->where('title', 'like', '%'.$this->search.'%')
-                    ->orderBy('order_position', 'asc')
+                    ->orderBy('id', 'asc')
                     ->get();
         }
 
@@ -182,16 +182,6 @@ class PhaseController extends Component
         }
         else{
             $this->emit('alert', "You can't delete a phase that already has tasks assigned", route('phases'));
-        }
-    }
-
-    public function updateTaskOrder($items)
-    {
-        foreach($items as $item)
-        {
-            $phase = Phase::find($item['value']);
-            $phase->order_position = $item['order'];
-            $phase->save();
         }
     }
 
