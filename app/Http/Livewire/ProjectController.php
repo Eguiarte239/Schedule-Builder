@@ -21,6 +21,7 @@ class ProjectController extends Component
     public $project;
     public $openModal = false;
     public $editModal = false;
+    public $routeProject = false;
 
     public $title;
     public $start_date;
@@ -125,6 +126,7 @@ class ProjectController extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
+        $this->routeProject = true;
         $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases");
     }
 
@@ -145,6 +147,7 @@ class ProjectController extends Component
         $this->project->leader_id = $this->leader;
         $this->project->save();
         $this->openModal = false;
+        $this->routeProject = false;
     }
 
     public function editProjectNote($id)
@@ -152,6 +155,7 @@ class ProjectController extends Component
         $this->setValues($id);
         $this->editModal = true;
         $this->openModal = true;
+        $this->routeProject = true;
     }
 
     public function editProject($id)
@@ -165,6 +169,7 @@ class ProjectController extends Component
         $this->project->priority = $this->priority;
         $this->project->update();
         $this->openModal = false;
+        $this->routeProject = false;
     }
 
     public function deleteProject($id)
@@ -172,6 +177,7 @@ class ProjectController extends Component
         if(Phase::where('project_id', $id)->count() == 0){
             Project::destroy($id);
             $this->openModal = false;
+            $this->routeProject = false;
             return redirect()->route('projects');
         }
         else{
