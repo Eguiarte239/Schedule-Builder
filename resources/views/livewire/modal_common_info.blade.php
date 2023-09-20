@@ -39,7 +39,7 @@
             @if($editModal) disabled @else required @endif>
         <x-jet-input-error for="end_date"></x-jet-input-error>
     </div> 
-    @if($routeProject == true)
+    @if(isset($routeProject) && $routeProject == true)
         <div>
             <label for="hour_estimate" class="block mb-2 text-sm font-medium text-gray-900">
                 Estimated hours
