@@ -21,7 +21,6 @@ class Phase extends Model
         'user_id',
         'title',
         'content',
-        'hour_estimate',
         'start_date',
         'end_date',
         'priority',
@@ -66,6 +65,11 @@ class Phase extends Model
     public function getEndTaskAttribute()
     {
         return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
+    }
+
+    public static function projectStartDate($project_id)
+    {
+        return Project::where('id', $project_id)->value('start_date');
     }
 
     public static function projectEndDate($project_id)

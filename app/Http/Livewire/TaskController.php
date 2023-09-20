@@ -30,7 +30,6 @@ class TaskController extends Component
     public $title;
     public $start_date;
     public $end_date;
-    public $hour_estimate;
     public $content;
     public $priority;
     public $project_id;
@@ -47,13 +46,8 @@ class TaskController extends Component
     {
         $rules = [
             "title" => ['required', 'string', 'max:255'],
-            "start_date" => [
-                Rule::when(!$this->editModal, function () {
-                    return ['required', 'date', 'after_or_equal:today'];
-                }),
-            ],
+            "start_date" => ['after_or_equal:'.Task::phaseStartDate($this->phase_id), 'before_or_equal:'.Task::phaseEndDate($this->phase_id)],
             "end_date" => ['required', 'date', 'after_or_equal:start_date', 'before_or_equal:'.Task::phaseEndDate($this->phase_id)],
-            "hour_estimate" => ['required', 'integer',],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'project_id' => 'required',
@@ -65,12 +59,6 @@ class TaskController extends Component
             'predecessor_task' => 'required',
             'predecessor_task.*' => 'required|nullable|exists:tasks,id|in:No aplica',
         ];
-        if($this->editModal){
-            $rules['hour_estimate'][] = new EstimatedTaskHoursRule($this->phase_id, $this->hour_estimate, $this->editModal, $this->task->hour_estimate);
-        }
-        else{
-            $rules['hour_estimate'][] = new EstimatedTaskHoursRule($this->phase_id, $this->hour_estimate, $this->editModal, 0);
-        }
         
         return $rules;
     }
@@ -117,7 +105,6 @@ class TaskController extends Component
         $this->title = $this->task->title;
         $this->start_date = $this->task->start_date;
         $this->end_date = $this->task->end_date;
-        $this->hour_estimate = $this->task->hour_estimate;
         $this->content = $this->task->content;
         $this->priority = $this->task->priority;
         $this->project_id = $this->task->project_id;
@@ -133,7 +120,6 @@ class TaskController extends Component
         $this->title = "";
         $this->start_date = now()->format('Y-m-d');
         $this->end_date = "";
-        $this->hour_estimate = "";
         $this->content = "";
         $this->priority = "";
         $this->project_id = null;
@@ -163,7 +149,6 @@ class TaskController extends Component
         $this->task->title = $this->title;
         $this->task->start_date = $this->start_date;
         $this->task->end_date = $this->end_date;
-        $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
         $this->task->project_id = $this->project_id;
@@ -192,7 +177,6 @@ class TaskController extends Component
         $this->task = Task::find($id);
         $this->task->user_id = Auth::user()->id;
         $this->task->title = $this->title;
-        $this->task->hour_estimate = $this->hour_estimate;
         $this->task->content = $this->content;
         $this->task->priority = $this->priority;
         $this->task->project_id = $this->project_id;

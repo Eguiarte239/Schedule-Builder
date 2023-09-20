@@ -38,14 +38,16 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             @if($editModal) disabled @else required @endif>
         <x-jet-input-error for="end_date"></x-jet-input-error>
-    </div>
-    <div>
-        <label for="hour_estimate" class="block mb-2 text-sm font-medium text-gray-900">
-            Estimated hours
-        </label>
-        <input wire:model="hour_estimate" type="text" id="hour_estimate"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required>
-        <x-jet-input-error for="hour_estimate"></x-jet-input-error>
-    </div>
+    </div> 
+    @if($routeProject == true)
+        <div>
+            <label for="hour_estimate" class="block mb-2 text-sm font-medium text-gray-900">
+                Estimated hours
+            </label>
+            <input wire:model="hour_estimate" type="text" id="hour_estimate"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                required>
+            <x-jet-input-error for="hour_estimate"></x-jet-input-error>
+        </div>  
+    @endif  
 </div>

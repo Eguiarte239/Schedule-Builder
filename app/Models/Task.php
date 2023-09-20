@@ -16,7 +16,6 @@ class Task extends Model
         'user_id',
         'title',
         'content',
-        'hour_estimate',
         'start_date',
         'end_date',
         'priority',
@@ -73,19 +72,13 @@ class Task extends Model
         return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
     }
 
+    public static function phaseStartDate($phase_id)
+    {
+        return Phase::where('id', $phase_id)->value('start_date');
+    }
+
     public static function phaseEndDate($phase_id)
     {
         return Phase::where('id', $phase_id)->value('end_date');
     }
-    
-    public static function phaseEstimatedHours($phase_id)
-    {
-        return Phase::where('id', $phase_id)->value('hour_estimate');
-    }
-
-    public static function totalEstimatedHoursPerPhase($phase_id)
-    {
-        return self::where('phase_id', $phase_id)->sum('hour_estimate');
-    }
-
 }

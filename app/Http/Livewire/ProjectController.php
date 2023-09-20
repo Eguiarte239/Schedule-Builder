@@ -6,7 +6,6 @@ use App\Models\AskDB;
 use App\Models\Phase;
 use App\Models\Project;
 use App\Models\User;
-use App\Rules\CurrentEstimatedHoursRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +21,7 @@ class ProjectController extends Component
     public $project;
     public $openModal = false;
     public $editModal = false;
+    public $routeProject = false;
 
     public $title;
     public $start_date;
@@ -55,18 +55,12 @@ class ProjectController extends Component
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
-            "hour_estimate" => ['required', 'integer', 'between:0,500',],
+            "hour_estimate" => ['required', 'integer', 'between:0,500'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'leader' => 'required',
             'leader.*' => 'required|exists:users,id',
         ];
-
-        if($this->editModal){
-            if($this->project->phase()->exists()){
-                $rules['hour_estimate'][] = new CurrentEstimatedHoursRule($this->project->hour_estimate);
-            }
-        } 
         
         return $rules;
     }
@@ -132,6 +126,7 @@ class ProjectController extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
+        $this->routeProject = true;
         $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases");
     }
 
@@ -152,6 +147,7 @@ class ProjectController extends Component
         $this->project->leader_id = $this->leader;
         $this->project->save();
         $this->openModal = false;
+        $this->routeProject = false;
     }
 
     public function editProjectNote($id)
@@ -159,6 +155,7 @@ class ProjectController extends Component
         $this->setValues($id);
         $this->editModal = true;
         $this->openModal = true;
+        $this->routeProject = true;
     }
 
     public function editProject($id)
@@ -172,6 +169,7 @@ class ProjectController extends Component
         $this->project->priority = $this->priority;
         $this->project->update();
         $this->openModal = false;
+        $this->routeProject = false;
     }
 
     public function deleteProject($id)
@@ -179,6 +177,7 @@ class ProjectController extends Component
         if(Phase::where('project_id', $id)->count() == 0){
             Project::destroy($id);
             $this->openModal = false;
+            $this->routeProject = false;
             return redirect()->route('projects');
         }
         else{
