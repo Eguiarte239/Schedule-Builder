@@ -1,6 +1,6 @@
 @if ($__data['projects'])    
-    <div wire:sortable.item="{{ $project->id }}" wire:key="project-{{ $project->id }}" class="mb-2 bg-neutral-50 rounded-lg shadow-md p-2 border dark:bg-slate-600">
-        <div class="px-2" wire:sortable.handle>
+    <div class="mb-2 bg-neutral-50 rounded-lg shadow-md p-2 border dark:bg-slate-600">
+        <div class="px-2">
             <div class="flex flex-row justify-between">
                 <div class="font-bold text-xl dark:text-white mb-2" >
                     {{ $project->title }}

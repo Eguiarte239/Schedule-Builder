@@ -6,7 +6,6 @@ use App\Models\AskDB;
 use App\Models\Phase;
 use App\Models\Project;
 use App\Models\User;
-use App\Rules\CurrentEstimatedHoursRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -55,18 +54,12 @@ class ProjectController extends Component
             ],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
             "end_date" => ['required', 'date', 'after_or_equal:start_date'],
-            "hour_estimate" => ['required', 'integer', 'between:0,500',],
+            "hour_estimate" => ['required', 'integer', 'between:0,500'],
             "content" => ['required', 'string', 'max:500'],
             "priority" => ['required', 'in:Low,Medium,High,Urgent'],
             'leader' => 'required',
             'leader.*' => 'required|exists:users,id',
         ];
-
-        if($this->editModal){
-            if($this->project->phase()->exists()){
-                $rules['hour_estimate'][] = new CurrentEstimatedHoursRule($this->project->hour_estimate);
-            }
-        } 
         
         return $rules;
     }
