@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use \OpenAI;
 use App\Exceptions\PotentiallyUnsafeQuery;
+use PDOException;
 
 class AskDB extends Model
 {
@@ -24,11 +24,24 @@ class AskDB extends Model
         $client = OpenAI::client($yourApiKey);
 
         $query = AskDB::getSQLQuery($question);
-        //dd($query);
         //$query = str_replace(["\t", "\n", "\r"], '', $query);
 
-        $result = json_encode(AskDB::getQueryResult($query));        
+        // hacer el try catch
+        try {
+            $result = json_encode(AskDB::getQueryResult($query));
+        } catch(PDOException $e){
+            $result = json_encode(['error' => $e->getMessage()]);
+        }
 
+        // when result of executing query is empty, return a message
+        if($result === '[]') {
+            return "No hay respuesta para esa pregunta";
+        }
+        // when query is too complex, return a message
+        elseif(substr_count($query, "JOIN") > 1) {
+            return "Muy difícil, krnal";
+        }
+             
         $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
@@ -100,12 +113,4 @@ class AskDB extends Model
         return DB::connection()->select($query);
     }
 
-    protected static function getRawQuery(string $query): string
-    {
-        if (version_compare(app()->version(), '10.0', '<')) {
-            /* @phpstan-ignore-next-line */
-            return (string) DB::raw($query);
-        }
-        return DB::raw($query)->getValue(DB::connection()->getQueryGrammar());
-    }
 }
