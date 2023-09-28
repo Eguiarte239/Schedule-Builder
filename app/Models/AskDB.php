@@ -24,24 +24,23 @@ class AskDB extends Model
         $client = OpenAI::client($yourApiKey);
 
         $query = AskDB::getSQLQuery($question);
-        //$query = str_replace(["\t", "\n", "\r"], '', $query);
 
-        // hacer el try catch
+        // when query is too complex, return a message
+        if(substr_count($query, "JOIN") > 1) {
+            return "Muy difícil, krnal";
+        }
+
         try {
             $result = json_encode(AskDB::getQueryResult($query));
         } catch(PDOException $e){
-            $result = json_encode(['error' => $e->getMessage()]);
+            return json_encode(['error' => 'Error en SQL']);
         }
 
-        // when result of executing query is empty, return a message
+        // when result of executed query is empty, return a message
         if($result === '[]') {
             return "No hay respuesta para esa pregunta";
         }
-        // when query is too complex, return a message
-        elseif(substr_count($query, "JOIN") > 1) {
-            return "Muy difícil, krnal";
-        }
-             
+        
         $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
