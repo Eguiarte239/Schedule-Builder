@@ -46,7 +46,7 @@ class AskDB extends Model
         'question' => $question,
         'result' => $result,
         ]);
-        $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
+        $prompt = str_replace(["\t", "\n", "\r"], ' ', $prompt);
 
         $answer = AskDB::queryOpenAi($client, $prompt);
 
@@ -55,7 +55,7 @@ class AskDB extends Model
 
     public static function getSQLQuery($question)
     {
-        $table_list = ['phases', 'projects', 'tasks', 'users'];
+        $table_list = ['projects','phases', 'tasks', 'users'];
         /* 'phases' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'is_finished'], 
             'projects' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'leader_id'],
             'tasks' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'project_id', 'phase_id', 'user_id_assigned', 'predecessor_task', 'is_finished'],
@@ -109,7 +109,8 @@ class AskDB extends Model
     }
 
     protected static function getQueryResult(string $query): array
-    {
+    {   
+        //dd($query);
         return DB::connection()->select($query);
     }
 
