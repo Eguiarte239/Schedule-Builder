@@ -40,9 +40,10 @@ class AskDB extends Model
             if($table_count > 1 && !Str::contains($query, "WHERE")) {
                 return "Para mis capacidades actuales solo puedes hacer consultas con una tabla a la vez si quieres obtener información de varios registros";
             }
-            else if($table_count == 0){
-                return "No hay respuesta para esa pregunta";
-            }
+        }
+
+        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
+            return "La consulta debe incluir al menos una de las tablas: projects, phases o tasks";
         }
 
         try {
