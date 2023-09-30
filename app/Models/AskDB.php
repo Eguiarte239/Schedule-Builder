@@ -81,7 +81,11 @@ class AskDB extends Model
         $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
         $query = AskDB::queryOpenAi($client, $prompt);
-        AskDB::ensureQueryIsSafe($query);
+        try {
+            AskDB::ensureQueryIsSafe($query);
+        } catch(PDOException $e){
+            return json_encode(['error' => 'Error en SQL']);
+        }
 
         return $query;
     }
