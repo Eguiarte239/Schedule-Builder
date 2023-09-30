@@ -18,6 +18,9 @@ class AskDB extends Model
 
     public static function ask($question): string
     {
+        $tables = ['projects','phases', 'tasks'];
+        $table_count = 0;
+
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         
         $yourApiKey = env("OPENAI_API_KEY");
@@ -27,7 +30,19 @@ class AskDB extends Model
 
         // when query is too complex, return a message
         if(substr_count($query, "JOIN") > 1) {
-            return "Muy difícil, krnal";
+            return "Esta es una consulta que supera mis capacidades actuales";
+        }
+
+        foreach($tables as $table) {
+            if(Str::contains($query, $table)) {
+                $table_count += 1;
+            }
+            if($table_count > 1 && !Str::contains($query, "WHERE")) {
+                return "Para mis capacidades actuales solo puedes hacer consultas con una tabla a la vez si quieres obtener información de varios registros";
+            }
+            else if($table_count == 0){
+                return "No hay respuesta para esa pregunta";
+            }
         }
 
         try {
@@ -55,13 +70,8 @@ class AskDB extends Model
     public static function getSQLQuery($question)
     {
         $table_list = ['projects','phases', 'tasks', 'users'];
-        /* 'phases' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'is_finished'], 
-            'projects' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'leader_id'],
-            'tasks' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'project_id', 'phase_id', 'user_id_assigned', 'predecessor_task', 'is_finished'],
-            'users' => ['id', 'name', 'email'] */
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
-        //$tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
         $prompt = (string) view('prompts.sql-query', [
         'question' => $question,  
@@ -77,14 +87,8 @@ class AskDB extends Model
 
     protected static function queryOpenAi($client, $prompt)
     {
-        /* $result = $client->completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
-            'max_tokens' => 300,
-            'top_p' => 1,
-        ]); */
         $result = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
@@ -109,7 +113,6 @@ class AskDB extends Model
 
     protected static function getQueryResult(string $query): array
     {   
-        //dd($query);
         return DB::connection()->select($query);
     }
 

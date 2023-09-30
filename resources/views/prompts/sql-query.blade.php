@@ -1,4 +1,5 @@
 Given the following question: "{{ $question }}," create an executable SQL query to answer the question. Utilize only the following tables and columns:
+If the question doesn't mention a table just return "[]"
 
 @foreach($tables as $table)
 Table: "{{ $table }}" consists of the following columns:
@@ -7,8 +8,8 @@ Table: "{{ $table }}" consists of the following columns:
 @endforeach
 @endforeach
 
-AVOID USING UNNECESSARY 'JOINS' WHEN THE ASK ITS ABOUT A SINGLE 'TABLE', AND KEEP SIMPLE THE SQL STATEMENT, IN CASE OF CREATING A 'JOIN' SQL STATEMENT, ASSIGN AN ALIAS TO EACH STATEMENT AND USE "LIKE '% %'" WHEN COMPARING NAMES, AND 'AS' WHEN JOINING TABLES TO AVOID AMBIGUOUS SQL STATEMENTS. 
-In your SELECT statement, make sure to use aliases. For example, "SELECT T.title FROM task T", where 'T' is an alias for the 'task' table. IF THE 'JOIN' HAPPENS USE THE EXAMPLE TO USE MORE INFORMATION FROM THE TABLES
+AVOID USING 'JOINS' WHEN THE QUESTION IS ABOUT A SINGLE 'TABLE', AND KEEP SIMPLE THE SQL STATEMENT, IN CASE OF CREATING A 'JOIN' SQL STATEMENT, ASSIGN AN ALIAS TO EACH STATEMENT AND USE "LIKE '% %'" WHEN COMPARING NAMES, AND 'AS' WHEN JOINING TABLES TO AVOID AMBIGUOUS SQL STATEMENTS. 
+In your SELECT statement, make sure to use aliases. For example, "SELECT T.title FROM task T", where 'T' is an alias for the 'task' table. IF THE 'JOIN' HAPPENS USE THIS EXAMPLE TO GET MORE INFORMATION FROM THE TABLES
 FOR EXAMPLE "SELECT P.title FROM projects P, WHERE P.title IN ('EXAMPLE','EXAMPLE 2');" INFORMATION CAN ONLY BE OBTAINED FROM A SINGLE TABLE IF MULTIPLE RECORDS ARE QUERIED.
 
-RETURN ONLY THE SQL QUERY.
+RETURN ONLY THE SQL QUERY IN ENGLISH, NOT A SENTENCE.
