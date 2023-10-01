@@ -22,7 +22,7 @@ class AskDB extends Model
         $table_count = 0;
 
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-        
+
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
 
@@ -56,7 +56,7 @@ class AskDB extends Model
         if($result === '[]') {
             return "No hay respuesta para esa pregunta";
         }
-        
+
         $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
@@ -73,9 +73,9 @@ class AskDB extends Model
         $table_list = ['projects','phases', 'tasks', 'users'];
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
-    
+
         $prompt = (string) view('prompts.sql-query', [
-        'question' => $question,  
+        'question' => $question,
         'tables' => $table_list,
         ]);
         $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
@@ -93,31 +93,36 @@ class AskDB extends Model
     protected static function queryOpenAi($client, $prompt)
     {
         $result = $client->chat()->create([
-            'model' => 'gpt-4',
+            'model' => 'gpt-3.5-turbo',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
             'messages' => [['role' => 'user', 'content' => $prompt]]
         ]);
- 
-        $query = $result['choices'][0]['message']['content']; 
+
+        $query = $result['choices'][0]['message']['content'];
 
         return $query;
     }
 
-    protected static function ensureQueryIsSafe(string $query): void
-    {
+    protected static function ensureQueryIsSafe(string $query){
+
         if (! env('STRICT_MODE')) {
             return;
         }
 
         $query = strtolower($query);
-        $forbiddenWords = ['insert', 'update', 'delete', 'alter', 'drop', 'truncate', 'create', 'replace', 'schema', 'password', 'passwords', 'version', 'host', 'dump', 'debug', 'script', 'cookie', 'cookies', 'session'];
-        throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
+        $forbiddenWords = ['insert', 'update', 'delete', 'alter', 'drop', 'truncate', 'create', 'replace', 'schema', 'password', 'passwords', 'version', 'host', 'dump', 'debug', 'script', 'cookie', 'cookies', 'session','* FROM users', '.password','* FROM personal_access_tokens'];
+        // throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
+        try {
+            throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
+        } catch (PotentiallyUnsafeQuery $exception) {
+            return "Your query contains potentially unsafe words.";
+        }
     }
 
     protected static function getQueryResult(string $query): array
-    {   
+    {
         return DB::connection()->select($query);
     }
 
