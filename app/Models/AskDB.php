@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use \OpenAI;
 use App\Exceptions\PotentiallyUnsafeQuery;
+use PDOException;
 
 class AskDB extends Model
 {
@@ -18,22 +18,50 @@ class AskDB extends Model
 
     public static function ask($question): string
     {
+        $tables = ['projects','phases', 'tasks'];
+        $table_count = 0;
+
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
 
         $query = AskDB::getSQLQuery($question);
-        //dd($query);
-        //$query = str_replace(["\t", "\n", "\r"], '', $query);
 
-        $result = json_encode(AskDB::getQueryResult($query));        
+        // when query is too complex, return a message
+        if(substr_count($query, "JOIN") > 1) {
+            return "Esta es una consulta que supera mis capacidades actuales";
+        }
 
+        foreach($tables as $table) {
+            if(Str::contains($query, $table)) {
+                $table_count += 1;
+            }
+            if($table_count > 1 && !Str::contains($query, "WHERE")) {
+                return "Para mis capacidades actuales solo puedes hacer consultas con una tabla a la vez si quieres obtener información de varios registros";
+            }
+        }
+
+        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
+            return "La consulta debe incluir al menos una de las tablas: projects, phases o tasks";
+        }
+
+        try {
+            $result = json_encode(AskDB::getQueryResult($query));
+        } catch(PDOException $e){
+            return json_encode(['error' => 'Error en SQL']);
+        }
+
+        // when result of executed query is empty, return a message
+        if($result === '[]') {
+            return "No hay respuesta para esa pregunta";
+        }
+        
         $prompt = (string) view('prompts.answer', [
         'question' => $question,
         'result' => $result,
         ]);
-        $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
+        $prompt = str_replace(["\t", "\n", "\r"], ' ', $prompt);
 
         $answer = AskDB::queryOpenAi($client, $prompt);
 
@@ -42,14 +70,9 @@ class AskDB extends Model
 
     public static function getSQLQuery($question)
     {
-        $table_list = ['phases', 'projects', 'tasks', 'users'];
-        /* 'phases' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'is_finished'], 
-            'projects' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'leader_id'],
-            'tasks' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'project_id', 'phase_id', 'user_id_assigned', 'predecessor_task', 'is_finished'],
-            'users' => ['id', 'name', 'email'] */
+        $table_list = ['projects','phases', 'tasks', 'users'];
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
-        //$tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
         $prompt = (string) view('prompts.sql-query', [
         'question' => $question,  
@@ -58,21 +81,19 @@ class AskDB extends Model
         $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
         $query = AskDB::queryOpenAi($client, $prompt);
-        AskDB::ensureQueryIsSafe($query);
+        try {
+            AskDB::ensureQueryIsSafe($query);
+        } catch(PDOException $e){
+            return json_encode(['error' => 'Error en SQL']);
+        }
 
         return $query;
     }
 
     protected static function queryOpenAi($client, $prompt)
     {
-        /* $result = $client->completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
-            'max_tokens' => 300,
-            'top_p' => 1,
-        ]); */
         $result = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
@@ -96,16 +117,8 @@ class AskDB extends Model
     }
 
     protected static function getQueryResult(string $query): array
-    {
+    {   
         return DB::connection()->select($query);
     }
 
-    protected static function getRawQuery(string $query): string
-    {
-        if (version_compare(app()->version(), '10.0', '<')) {
-            /* @phpstan-ignore-next-line */
-            return (string) DB::raw($query);
-        }
-        return DB::raw($query)->getValue(DB::connection()->getQueryGrammar());
-    }
 }
