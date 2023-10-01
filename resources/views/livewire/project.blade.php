@@ -10,16 +10,18 @@
                     </div>
                 @endcan
 
+                @can ('assign-leader')
                 <div>
                     <div>
                         <label for="Ask DB" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{$response}}</label>
                         <input wire:model.defer="ask" type="text" id="Ask DB" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ask something" required>
                     </div>
-                    
+
                     <x-jet-button wire:click="askDB" class="mt-4 mb-4">
                         Preguntar
                     </x-jet-button>
                 </div>
+                @endcan
 
                 @include('livewire.search_bar', ['search' => $search, 'tasks' => false])
 
@@ -70,7 +72,7 @@
             <x-jet-secondary-button wire:click="$toggle('openModal')" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
             </x-jet-secondary-button>
-            
+
             @if ($editModal)
                 <x-slot name="title">
                     Edit project
@@ -108,7 +110,7 @@
                     window.location.href = route;
                 });
             })
-            
+
             Livewire.on('new-project-alert', function(message) {
                 Swal.fire({
                     imageUrl: 'https://stickershop.line-scdn.net/stickershop/v1/product/7458249/LINEStorePC/main.png',
