@@ -33,7 +33,7 @@ class AskDB extends Model
         try {
             $result = json_encode(AskDB::getQueryResult($query));
         } catch(PDOException $e){
-            return json_encode(['error' => 'Error en SQL']);
+            return json_encode('Error en SQL');
         }
 
         // when result of executed query is empty, return a message
@@ -55,19 +55,15 @@ class AskDB extends Model
     public static function getSQLQuery($question)
     {
         $table_list = ['projects','phases', 'tasks', 'users'];
-        /* 'phases' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'is_finished'], 
-            'projects' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'leader_id'],
-            'tasks' => ['id', 'user_id', 'title', 'content', 'hour_estimate', 'start_date', 'end_date', 'priority', 'project_id', 'phase_id', 'user_id_assigned', 'predecessor_task', 'is_finished'],
-            'users' => ['id', 'name', 'email'] */
+        
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
-        //$tables = Schema::getConnection()->getDoctrineSchemaManager()->listTables();
     
         $prompt = (string) view('prompts.sql-query', [
         'question' => $question,  
         'tables' => $table_list,
         ]);
-        $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
+        // $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
         $query = AskDB::queryOpenAi($client, $prompt);
         AskDB::ensureQueryIsSafe($query);
@@ -77,14 +73,8 @@ class AskDB extends Model
 
     protected static function queryOpenAi($client, $prompt)
     {
-        /* $result = $client->completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
-            'max_tokens' => 300,
-            'top_p' => 1,
-        ]); */
         $result = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
@@ -109,7 +99,6 @@ class AskDB extends Model
 
     protected static function getQueryResult(string $query): array
     {   
-        //dd($query);
         return DB::connection()->select($query);
     }
 
