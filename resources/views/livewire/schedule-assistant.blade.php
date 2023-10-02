@@ -18,7 +18,7 @@
                 </li>
             </ul>
             <p class="mb-3 text-gray-500 dark:text-gray-800">
-                2: Queries should be simple. For instance, if you want to retrieve information about a project, you will only be able to obtain data related to that project if your query involves phases or tasks. Otherwise, if you want to get information about multiple projects, you won't be able to get data that involves the phases or tasks of those projects. Here's an example:
+                2: Queries should be simple. For instance, if you want to retrieve information about a project (for example) then you'll have to specify what you need. Otherwise, if you need to obtain information about multiple projects then you'll have to be as specific and clear as possible. Here's an example:
             </p>
             <ul class="mb-3 ml-8 text-gray-500 list-inside dark:text-gray-400">
                 <li>
@@ -30,12 +30,15 @@
                     Give me the titles of the currently existing projects.
                 </li>
                 <li>
-                    <i class="fa-solid fa-circle-xmark" style="color: #e81111;"></i>
-                    Give me the titles of the phases associated with the "Sample" and "Second Sample" projects.
+                    <i class="fa-solid fa-circle-check" style="color: #17ab50;"></i>
+                    Give me the titles of the phases associated with the "Sample" and "Second Sample" projects and tell me which project each one belongs to.
                 </li>
             </ul>
             <p class="mb-3 text-gray-500 dark:text-gray-800">
                 3: The query at the moment cannot involve projects, phases, and tasks all at once. If you wish to obtain information in this manner, it is advisable to make two or more separate queries.
+            </p>
+            <p class="mb-3 text-gray-500 dark:text-gray-800">
+                Since the current status of Schedule Assistant it may not work as expected sometimes. In this case please rephrase your question in a more specific and clearer way.
             </p>
         </x-slot>
 

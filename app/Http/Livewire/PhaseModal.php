@@ -103,6 +103,7 @@ class PhaseModal extends Component
         $this->phase->project_id = $this->project_id;
         $this->phase->save();
         $this->openModal = false;
+        $this->emit('refresh');
     }
 
     public function editPhaseNote($id)
@@ -123,6 +124,7 @@ class PhaseModal extends Component
         $this->phase->priority = $this->priority;
         $this->phase->update();
         $this->openModal = false;
+        $this->emit('refresh');
     }
 
     public function deletePhase($id)

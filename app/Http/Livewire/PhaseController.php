@@ -25,7 +25,7 @@ class PhaseController extends Component
         'Urgent' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
     ];
 
-    protected $listeners = ['refreshComponent' => '$refresh'];
+    protected $listeners = ['refresh' => '$refresh'];
 
     public function render()
     {   

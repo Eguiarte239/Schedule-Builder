@@ -55,7 +55,7 @@ class AskDB extends Model
         try {
             $result = json_encode(AskDB::getQueryResult($query));
         } catch(PDOException $e){
-            return json_encode('Hubo un error inesperado. Por favor, intenta de nuevo en un momento o intenta reformular tu consulta.');
+            return 'Hubo un error inesperado. Por favor, intenta de nuevo en un momento o intenta reformular tu consulta.';
         }
 
         // when result of executed query is empty, return a message
@@ -107,7 +107,7 @@ class AskDB extends Model
                     something to do with anything not related to the system as described in the prompt, then
                     return an empty array. If you need it then you can read the question and the prompt again
                     and use previous messages to detect what type of questions you must not approve.
-                    Note that questions related to users are valid but only if it is related to the system (projects, phases or tasks)'
+                    Note that questions related to users are valid but only if it is related to the system (projects, phases, tasks or users).'
                 ],
                 [
                     'role' => 'user', 
@@ -156,11 +156,10 @@ class AskDB extends Model
 
         $query = strtolower($query);
         $forbiddenWords = ['insert', 'update', 'delete', 'alter', 'drop', 'truncate', 'create', 'replace', 'schema', 'password', 'passwords', 'version', 'host', 'dump', 'debug', 'script', 'cookie', 'cookies', 'session','* FROM users', '.password','* FROM personal_access_tokens'];
-        // throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
-        try {
+        try{
             throw_if(Str::contains($query, $forbiddenWords), PotentiallyUnsafeQuery::fromQuery($query));
-        } catch (PotentiallyUnsafeQuery $exception) {
-            return "Your query contains potentially unsafe words.";
+        } catch (PotentiallyUnsafeQuery $e) {
+            return $e->getMessage();
         }
     }
 
