@@ -1,1 +1,1 @@
-Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer in spanish. If you get an empty array, it means that there is no answer to the question.
+Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer in spanish. ONLY ANSWER QUESTION RELATED TO projects, tasks and phases. 

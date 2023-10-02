@@ -15,7 +15,7 @@ class AskDB extends Model
     use HasFactory;
 
     // protected string $connection;
-
+ 
     public static function ask($question): string
     {
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
@@ -74,7 +74,7 @@ class AskDB extends Model
     protected static function queryOpenAi($client, $prompt)
     {
         $result = $client->chat()->create([
-            'model' => 'gpt-4',
+            'model' => 'gpt-3.5-turbo',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
