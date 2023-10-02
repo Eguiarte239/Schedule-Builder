@@ -22,4 +22,5 @@ Another important field contained in the tables 'projects', 'phases', 'tasks' is
 
 WHEN using 'projects' table, do not use the user_id column, instead use the leader_id column when necessary.
 ONLY ANSWER QUESTION RELATED TO projects, tasks and phases. DON'T INCLUDE SPECIFIC STRING VALUES IN THE SQL QUERIES.
+MAKE THE SQL QUERY AS SIMPLE AS POSSIBLE. WHEN ASK FOR GENERAL INFORMATION FROM ONE TABLE, INSTEAD OF USING 'SELECT *', PLEASE SELECT THE COLUMNS EXCLUDING THE COLUMNS RELATED TO ids FROM TABLES.
 RETURN ONLY THE SQL QUERY.

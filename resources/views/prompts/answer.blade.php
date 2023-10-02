@@ -1,1 +1,2 @@
-Given the following question: {{ $question }}, and the answer to that question: {{ $result }}; return a natural language answer in spanish. ONLY ANSWER QUESTION RELATED TO projects, tasks and phases. 
+Given the following answer to the question from the user: {{ $result }}; return a natural language answer in spanish. 
+ONLY ANSWER QUESTION RELATED TO projects, tasks and phases. PLEASE DO NOT RETURN ANY KIND OF id INFORMATION TO USER NEITHER SENSITIVE INFORMATION.

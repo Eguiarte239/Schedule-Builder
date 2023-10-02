@@ -47,7 +47,7 @@ class AskDB extends Model
         ]);
         $prompt = str_replace(["\t", "\n", "\r"], ' ', $prompt);
 
-        $answer = AskDB::queryOpenAi($client, $prompt);
+        $answer = AskDB::queryOpenAi($client, $prompt, $question);
 
         return $answer;
     }
@@ -65,20 +65,28 @@ class AskDB extends Model
         ]);
         // $prompt = str_replace(["\t", "\n", "\r"], '', $prompt);
 
-        $query = AskDB::queryOpenAi($client, $prompt);
+        $query = AskDB::queryOpenAi($client, $prompt, $question);
         AskDB::ensureQueryIsSafe($query);
 
         return $query;
     }
 
-    protected static function queryOpenAi($client, $prompt)
+    protected static function queryOpenAi($client, $prompt, $question)
     {
         $result = $client->chat()->create([
             'model' => 'gpt-3.5-turbo',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 1200,
-            'messages' => [['role' => 'user', 'content' => $prompt]]
+            'messages' => [[
+                'role' => 'user', 
+                'content' => $question
+            ],
+            [
+                'role' => 'system', 
+                'content' => $prompt
+            ]
+            ]
         ]);
  
         $query = $result['choices'][0]['message']['content']; 
