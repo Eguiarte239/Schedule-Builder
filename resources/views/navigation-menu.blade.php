@@ -40,10 +40,18 @@
                                 </a>
                             </li>
                         </ul>
+                        <ul class="rounded-lg">
+                            <li>
+                                <button wire:click="$emit('open-help')" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                    <span class="ml-2">How to use Schedule-Assistant</span>
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-
+            
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <!-- Teams Dropdown -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())

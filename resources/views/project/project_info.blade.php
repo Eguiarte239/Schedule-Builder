@@ -7,7 +7,7 @@
                 </div>    
                 <div>
                     @can('assign-leader')
-                        <button wire:click="editProjectNote({{ $project->id }})">
+                        <button wire:click="$emit('edit-project-modal',{{ $project->id }})">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                 class="w-6 h-6 dark:stroke-white">

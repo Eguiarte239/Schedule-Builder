@@ -17,6 +17,7 @@
         <!-- Styles -->
         @livewireStyles
         <script src="to/prefers-dark.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     </head>
     <body class="font-sans antialiased mode-dark">
         <x-jet-banner />
@@ -27,6 +28,7 @@
 
             <!-- Page Content -->
             <main>
+                @livewire('schedule-assistant')
                 {{ $slot }}
             </main>
         </div>
