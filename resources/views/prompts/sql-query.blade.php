@@ -25,6 +25,12 @@ Table 'tasks' has the following foreign keys:
 Another important field contained in the tables 'projects', 'phases', 'tasks' is the column 'priority' which can only have one of the following values: 'Low','Medium','High','Urgent'
 
 When using 'projects' table, do not use the user_id column, instead use the leader_id column when necessary.
+AVOID USING 'JOINS' WHEN THE QUESTION IS ABOUT A SINGLE 'TABLE', AND KEEP SIMPLE THE SQL STATEMENT, IN CASE OF CREATING A 'JOIN' SQL STATEMENT, ASSIGN AN ALIAS TO EACH STATEMENT AND USE "LIKE '% %'" WHEN COMPARING NAMES, AND 'AS' WHEN JOINING TABLES TO AVOID AMBIGUOUS SQL STATEMENTS.
+IF YOU DON'T USE JOINS MAKE SURE TO GET ALL THE TABLES YOU NEED, FOR EXAMPLE "SELECT P.title FROM projects P, users WHERE P.leader_id = users.id".
+In your SELECT statement, make sure to use aliases. For example, "SELECT T.title FROM task T", where 'T' is an alias for the 'task' table. IF THE 'JOIN' HAPPENS USE THIS EXAMPLE TO GET MORE INFORMATION FROM THE TABLES
+FOR EXAMPLE "SELECT P.title FROM projects P, WHERE P.title IN ('EXAMPLE','EXAMPLE 2');" INFORMATION CAN ONLY BE OBTAINED FROM A SINGLE TABLE IF MULTIPLE RECORDS ARE QUERIED.
+IF THE QUESTION IS ABOUT ONE SINGLE TABLE, BUT YOU NEED INFORMATION FROM ANOTHER TABLE, YOU'RE ALLOWED TO USER A SINGLE JOIN, ITS IMPORTANT NOT DOING SUB-QUERIES, OR CONSULT MORE THAN ONE TABLE IN A SQL SENTENCE
+IN A WHERE CLAUSE USE "leader_id" TO SEARCH INFORMATION
 Only answer questions related to projects, tasks and phases. Don't include specific string values in the SQL queries.
 Make the SQL query as simple as possible. When asking for general information from one table, instead of using 'SELECT *', please select all columns excluding the columns related to ids from tables.
 Return only the SQL query but remember, if the question has something that involves projects, phases, tasks or users then return just an empty array.
