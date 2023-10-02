@@ -18,6 +18,9 @@ class AskDB extends Model
  
     public static function ask($question): string
     {
+        $tables = ['projects','phases', 'tasks'];
+        $table_count = 0;
+
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         
         $yourApiKey = env("OPENAI_API_KEY");
@@ -34,6 +37,19 @@ class AskDB extends Model
 
         if($query === '[]') {
             return "Es posible que la pregunta contenga algo no relacionado a proyectos, fases, tareas o usuarios. Por favor reformula tu consulta.";
+        }
+        foreach($tables as $table) {
+            if(Str::contains($query, $table)) {
+                $table_count += 1;
+            }
+            if($table_count > 1 && !Str::contains($query, "WHERE")) {
+                return "Para mis capacidades actuales solo puedes hacer consultas con una tabla a la vez si quieres obtener información de varios registros";
+            }
+        }
+
+        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
+            return "La consulta debe incluir al menos una de las tablas: projects, phases o tasks";
+
         }
 
         try {
@@ -60,7 +76,6 @@ class AskDB extends Model
     public static function getSQLQuery($question)
     {
         $table_list = ['projects','phases', 'tasks', 'users'];
-        
         $yourApiKey = env("OPENAI_API_KEY");
         $client = OpenAI::client($yourApiKey);
     
@@ -68,7 +83,7 @@ class AskDB extends Model
         'question' => $question,  
         'tables' => $table_list,
         ]);
-
+      
         $query = AskDB::queryOpenAi($client, $prompt, $question);
         AskDB::ensureQueryIsSafe($query);
 
@@ -109,7 +124,7 @@ class AskDB extends Model
     protected static function resultOpenAi($client, $prompt, $result)
     {
         $result = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
+            'model' => 'gpt-4',
             'temperature' => 0.2,
             'frequency_penalty' => 0,
             'max_tokens' => 2000,
