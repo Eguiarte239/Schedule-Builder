@@ -52,7 +52,6 @@ class ProjectController extends Component
     public function askDB(){
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         $this->response = AskDB::ask($this->ask);
-        // $this->response = AskDB::evaluateQuery('SELECT * FROM projects WHERE end_date = (SELECT min(end_date) FROM projects);');
     }
 
     public function getProgressPercentage($id)
