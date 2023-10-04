@@ -36,18 +36,15 @@ class AskDB extends Model
         }
 
         if($query === '[]') {
-            return "Es posible que la pregunta contenga algo no relacionado a proyectos, fases, tareas o usuarios. Por favor reformula tu consulta.";
+            return "Es posible que la pregunta contenga algo no relacionado a proyectos, fases o tareas. Por favor reformula tu consulta.";
         }
         foreach($tables as $table) {
             if(Str::contains($query, $table)) {
                 $table_count += 1;
             }
-            if($table_count > 1 && !Str::contains($query, "WHERE")) {
-                return "Para mis capacidades actuales solo puedes hacer consultas con una tabla a la vez si quieres obtener información de varios registros";
-            }
         }
 
-        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
+        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks"])) {
             return "La consulta debe incluir al menos una de las tablas: projects, phases o tasks";
 
         }
@@ -107,7 +104,9 @@ class AskDB extends Model
                     something to do with anything not related to the system as described in the prompt, then
                     return an empty array. If you need it then you can read the question and the prompt again
                     and use previous messages to detect what type of questions you must not approve.
-                    Note that questions related to users are valid but only if it is related to the system (projects, phases, tasks or users).'
+                    Note that questions related to users are valid but only if it is related to the system (projects, phases, or tasks),
+                    you can only return the name and email related to a specific user if the question asks for it but not anything else.
+                    If you are asked to return information such as a password or a session token then just say that you cannot return that information.'
                 ],
                 [
                     'role' => 'user', 

@@ -31,6 +31,15 @@ class ProjectController extends Component
 
     protected $listeners = ['refresh' => '$refresh'];
 
+    protected function rules()
+    {
+        $rules = [
+            "ask" => ['required', 'string', 'max:255'],
+        ];
+        
+        return $rules;
+    }
+
     public function getProjectsProperty()
     {
         return Project::where(function ($query) {
@@ -50,6 +59,8 @@ class ProjectController extends Component
     }
 
     public function askDB(){
+        $this->validate();
+        $this->response = '';
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         $this->response = AskDB::ask($this->ask);
     }
