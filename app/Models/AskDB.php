@@ -18,7 +18,7 @@ class AskDB extends Model
  
     public static function ask($question): string
     {
-        $tables = ['projects','phases', 'tasks'];
+        $tables = ['projects','phases', 'tasks', 'users'];
         $table_count = 0;
 
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
@@ -32,11 +32,11 @@ class AskDB extends Model
 
         // when query is too complex, return a message
         if(substr_count($query, "JOIN") > 1) {
-            return "Esta consulta supera mis capacidades actuales. Intenta con una consulta más simple.";
+            return "Your question exceed my current capacities. Please try with a simplier question.";
         }
 
         if($query === '[]') {
-            return "Es posible que la pregunta contenga algo no relacionado a proyectos, fases o tareas. Por favor reformula tu consulta.";
+            return "It's possible that your question contains something not related to projects, phases or tasks. Please reforumalte your question.";
         }
         foreach($tables as $table) {
             if(Str::contains($query, $table)) {
@@ -44,20 +44,20 @@ class AskDB extends Model
             }
         }
 
-        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks"])) {
-            return "La consulta debe incluir al menos una de las tablas: projects, phases o tasks";
+        if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
+            return "The question must involve at least projects, phases or tasks.";
 
         }
 
         try {
             $result = json_encode(AskDB::getQueryResult($query));
         } catch(PDOException $e){
-            return 'Hubo un error inesperado. Por favor, intenta de nuevo en un momento o intenta reformular tu consulta.';
+            return 'There was an unexpected error. Please try again in a momento or try to reformulate your question.';
         }
 
         // when result of executed query is empty, return a message
         if($result === '[]') {
-            return "Es posible que no haya respuesta a esa pregunta. Si consideras esto un error intenta reformular tu pregunta.";
+            return "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.";
         }
 
         $prompt = (string) view('prompts.answer', [

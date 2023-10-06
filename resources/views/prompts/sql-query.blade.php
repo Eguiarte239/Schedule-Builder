@@ -8,7 +8,7 @@ Table: '{{ $table }}' consists of the following columns:
 @endforeach
 
 If the question contains something that has nothing to do with the tables provided, please just return an empty array like "[]". In this case don't create a sql query.
-An example of the above would be the following: "How many projects are there and what is your favorite color" or "How many phases are there? and what is your favorite animal?". Notice that in these two questions there is something not related to projects, phases, tasks or users. 
+An example of the above would be the following: "How many projects are there and what is your favorite color" or "How many phases are there? and what is your favorite animal?". Notice that in these two questions there is something not related to projects, phases or tasks. 
 In this case you must return an empty array like the one I mentioned before.
 Otherwire you can continue with the following instructions:
 Table 'projects' has the following foreign keys:
