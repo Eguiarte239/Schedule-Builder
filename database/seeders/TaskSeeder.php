@@ -20,6 +20,7 @@ class TaskSeeder extends Seeder
     {
         $tasks = [
             [
+                'user_id' => 2,
                 'title' => 'Task A',
                 'content' => 'This is task A',
                 'start_date' => '2022-01-01',
@@ -31,6 +32,7 @@ class TaskSeeder extends Seeder
                 'predecessor_task' => null,
             ],
             [
+                'user_id' => 2,
                 'title' => 'Task B',
                 'content' => 'This is task B',
                 'start_date' => '2022-02-01',
@@ -42,6 +44,7 @@ class TaskSeeder extends Seeder
                 'predecessor_task' => null,
             ],
             [
+                'user_id' => 2,
                 'title' => 'Task C',
                 'content' => 'This is task C',
                 'start_date' => '2022-03-01',

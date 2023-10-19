@@ -19,31 +19,31 @@ class PhaseSeeder extends Seeder
     {
         $phases = [
             [
+                'user_id' => 2,
                 'title' => 'Phase A',
                 'content' => 'This is phase A',
                 'start_date' => '2022-01-01',
                 'end_date' => '2022-01-31',
                 'priority' => 'High',
                 'project_id' => Project::first()->id,
-                'user_id' => User::first()->id,
             ],
             [
+                'user_id' => 2,
                 'title' => 'Phase B',
                 'content' => 'This is phase B',
                 'start_date' => '2022-02-01',
                 'end_date' => '2022-02-28',
                 'priority' => 'Medium',
                 'project_id' => Project::first()->id,
-                'user_id' => User::first()->id,
             ],
             [
+                'user_id' => 2,
                 'title' => 'Phase C',
                 'content' => 'This is phase C',
                 'start_date' => '2022-03-01',
                 'end_date' => '2022-03-31',
                 'priority' => 'Low',
                 'project_id' => Project::first()->id,
-                'user_id' => User::first()->id,
             ],
         ];
 
