@@ -3,9 +3,9 @@
     <x-jet-dialog-modal wire:model="openModal">
         <x-slot name="title">
             @if($editModal)
-                Edit project {{ $this->project->title }}
+                {{__('Edit project')}} {{ $this->project->title }}
             @else
-                Add new project
+                {{__('Add new project')}}
             @endif
         </x-slot>
 
@@ -13,7 +13,7 @@
             @include('modal.modal_common_info')
             <div class="mb-4">
                 <label for="leader" class="block mb-2 text-sm font-medium text-gray-900">
-                    Users
+                    {{__('Users')}}
                 </label>
                 <select name="leader" id="leader"class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="leader" @if($editModal) disabled @else required @endif>>
                     <option value="" hidden selected></option>
@@ -27,7 +27,7 @@
             </div>
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
-                    Description
+                    {{__('Description')}}
                 </label>
                 <textarea wire:model="content" name="editor" id="editor" cols="30" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
             </div>
@@ -47,11 +47,11 @@
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
                 <x-jet-button class="ml-3" wire:click="editProject({{ $this->project->id }})">
-                    Save project
+                    {{__('Save project')}}
                 </x-jet-button>
             @else
                 <x-jet-button class="ml-3" wire:click="saveProject">
-                    Save project
+                    {{__('Save project')}}
                 </x-jet-button>
             @endif
         </x-slot>

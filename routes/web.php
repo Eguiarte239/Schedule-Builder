@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GoogleAuthController;
-use App\Http\Controllers\OpenAIController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Livewire\PhaseController;
 use App\Http\Livewire\ProjectController;
 use App\Http\Livewire\TaskController;
@@ -28,6 +27,7 @@ Route::middleware([
     Route::get('/task', TaskController::class)->name('tasks');
 });
 
-Route::get('/openai', 'App\Http\Controllers\OpenAIController@index');
-Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
-Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
+Route::get('locale/{locale}', [LanguageController::class, 'setLanguage'])->name('locale');
+
+/*Route::get('/auth/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');*/

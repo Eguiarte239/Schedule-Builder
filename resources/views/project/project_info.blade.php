@@ -26,18 +26,18 @@
             <p class="mb-3 text-lg text-gray-800 md:text-base dark:text-white">
                 {{ $project->content }}
                 <br>
-                    Project leader: {{ $project->user->name }}
+                    {{__('Project leader')}}: {{ $project->user->name }}
                 <br>
                 <span class="bg-blue-100 text-blue-800 text-ms font-medium inline-flex px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
                     <svg aria-hidden="true" class="w-4 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                    Estimated hours: {{ $project->hour_estimate }}
+                    {{__('Estimated hours')}}: {{ $project->hour_estimate }}
                 </span>
                 <br>
                 @php
                     $class = $classMap[$project->priority];
                 @endphp
                 <span class="{{ $class }} text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
-                    {{ $project->priority }}
+                    {{ __($project->priority) }}
                 </span> 
             </p>
         </div>
@@ -48,7 +48,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {{ $project->start_task }}
+            {{ __($project->start_task) }}
         </span>
         <span
             class="flex flex-row bg-red-200 rounded-lg px-3 py-1 text-sm font-semibold text-red-800 mr-2 mt-2">
@@ -57,7 +57,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {{ $project->end_task }}
+            {{ __($project->end_task) }}
         </span>
     </div>
 @else
