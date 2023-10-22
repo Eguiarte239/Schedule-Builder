@@ -68,7 +68,10 @@ class TaskController extends Component
             }
         }
         if($isPredecessor == true && $allSuccessorsMarked == true){
-            $this->emit('predecessor', "You can't uncheck a task which is predecessor of another until you uncheck that one", route('tasks'));
+            $this->emit('predecessor', [
+                'message' => trans("You can't uncheck a task which is predecessor of another until you uncheck that one"), 
+                'route' => route('tasks')
+            ]);
         }
         else {
             if($task->is_finished == false && Carbon::now()->greaterThan(Carbon::parse($task->end_date)) && Auth::user()->id == $task->user_id_assigned){

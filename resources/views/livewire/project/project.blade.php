@@ -40,26 +40,26 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const Swal = window.Swal;
-            Livewire.on('alert', function(message, route) {
+            Livewire.on('alert', function(data) {
                 Swal.fire({
                     imageUrl: 'https://media.tenor.com/2KK38LekJu0AAAAC/doki-doki-literature-club-mad.gif',
                     imageWidth: 250,
                     imageHeight: 250,
                     title: 'Oops...',
-                    text: message,
+                    text: data.message,
                     timer: 5000,
                 }).then(function () {
-                    window.location.href = route;
+                    window.location.href = data.route;
                 });
             })
             
-            Livewire.on('new-project-alert', function(message) {
+            Livewire.on('new-project-alert', function(data) {
                 Swal.fire({
                     imageUrl: 'https://stickershop.line-scdn.net/stickershop/v1/product/7458249/LINEStorePC/main.png',
                     imageWidth: 250,
                     imageHeight: 250,
-                    title: 'Be careful',
-                    text: message,
+                    title: data.title,
+                    text: data.message,
                 })
             })
         </script>

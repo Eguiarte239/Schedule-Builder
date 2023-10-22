@@ -42,10 +42,7 @@
                         </ul>
                         <ul class="rounded-lg">
                             <li>
-                                <button wire:click="$emit('open-help')" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <i class="fa-regular fa-circle-question"></i>
-                                    <span class="ml-2">{{__('How to use Schedule-Assistant')}}</span>
-                                </button>
+                                @include('language')
                             </li>
                         </ul>
                     </div>
@@ -134,12 +131,8 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
-                            <x-jet-dropdown-link href="{{ route('locale', 'es') }}">
-                                {{ __('ES') }}
-                            </x-jet-dropdown-link>
-
-                            <x-jet-dropdown-link href="{{ route('locale', 'en') }}">
-                                {{ __('EN') }}
+                            <x-jet-dropdown-link wire:click="$emit('open-help')" class="cursor-pointer">
+                                {{__('How to use Schedule-Assistant')}}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())

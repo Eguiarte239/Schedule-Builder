@@ -30,7 +30,7 @@
                     $class = $classMap[$phase->priority];
                 @endphp
                 <span class="{{ $class }} text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
-                    {{ $phase->priority }}
+                    {{ __($phase->priority) }}
                 </span> 
             </p>
         </div>
