@@ -5,19 +5,19 @@
                 @can('assign-leader')
                     <div>
                         <x-jet-button wire:click="$emit('new-project-modal')" class="mb-4">
-                            + New project
+                            + {{__('New project')}}
                         </x-jet-button>
                     </div>
                     
                     <div>
                         <div>
                             <label for="Ask DB" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{$response}}</label>
-                            <input wire:model.defer="ask" type="text" id="Ask DB" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ask me what you need" required>
+                            <input wire:model.defer="ask" type="text" id="Ask DB" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="{{__('Ask me what you need')}}" required>
                         </div>
                         <x-jet-input-error for="ask"></x-jet-input-error>
                         
                         <x-jet-button wire:click="askDB" class="mt-4 mb-4">
-                            Ask Schedule Assistant
+                            {{__('Ask Schedule Assistant')}}
                         </x-jet-button>
                     </div>
                 @endcan

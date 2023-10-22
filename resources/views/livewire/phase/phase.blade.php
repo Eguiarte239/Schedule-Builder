@@ -5,7 +5,7 @@
                 @can('assign-employee')
                     <div>
                         <x-jet-button wire:click="$emit('new-phase-modal')" class="mb-4">
-                            + New phase
+                            + {{__('New phase')}}
                         </x-jet-button>
                     </div>
                 @endcan

@@ -3,9 +3,9 @@
     <x-jet-dialog-modal wire:model="openModal">
         <x-slot name="title">
             @if($editModal)
-                Editing phase {{ $this->phase->title }} 
+                {{__('Edit phase')}} {{ $this->phase->title }} 
             @else
-                Add new phase
+                {{__('Add new phase')}}
             @endif
         </x-slot>
 
@@ -14,7 +14,7 @@
             @can('assign-employee')
                 <div class="mb-4">
                     <label for="project_id" class="block mb-2 text-sm font-medium text-gray-900">
-                        Projects
+                        {{__('Projects')}}
                     </label>
                     <select name="project_id" id="project_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" wire:model="project_id" @if($editModal) disabled @else required @endif>>
                         <option value="" hidden selected></option>
@@ -27,7 +27,7 @@
             @endcan
             <div wire:ignore>
                 <label for="content" class="block mb-2 text-sm font-medium text-gray-900">
-                    Description
+                    {{__('Description')}}
                 </label>
                 <textarea wire:model="content" name="editor" id="editor" cols="30" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></textarea>
             </div>
@@ -47,11 +47,11 @@
                     {{ __('Delete') }}
                 </x-jet-secondary-button>
                 <x-jet-button class="ml-3" wire:click="editPhase({{ $this->phase->id }})">
-                    Save phase
+                    {{__('Save phase')}}
                 </x-jet-button>
             @else
                 <x-jet-button class="ml-3" wire:click="savePhase">
-                    Save phase
+                    {{__('Save phase')}}
                 </x-jet-button>
             @endif
         </x-slot>
