@@ -669,5 +669,6 @@
     "You can't delete a phase that already has tasks assigned": "Vous ne pouvez pas supprimer une phase à laquelle des tâches sont déjà attribuées",
     "Once you save your task, its start and end date won't be able to be changed": "Une fois votre tâche enregistrée, ses dates de début et de fin ne pourront plus être modifiées",
     "You can't uncheck a task which is predecessor of another until you uncheck that one": "Vous ne pouvez pas décocher une tâche qui est le prédécesseur d'une autre tant que vous n'avez pas décoché celle-là",
-    "You can't delete a task which is a predecessor of another": "Vous ne pouvez pas supprimer une tâche qui est le prédécesseur d'une autre"
+    "You can't delete a task which is a predecessor of another": "Vous ne pouvez pas supprimer une tâche qui est le prédécesseur d'une autre",
+    "Routes": "Itinéraires"
 }
