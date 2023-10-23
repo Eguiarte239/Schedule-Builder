@@ -96,7 +96,10 @@ class ProjectModal extends Component
         $this->editModal = false;
         $this->openModal = true;
         $this->routeProject = true;
-        $this->emit('new-project-alert', "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases");
+        $this->emit('new-project-alert', [
+            'title' => trans('Be careful'),
+            'message' => trans("Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases"),
+        ]);
     }
 
     public function saveProject()
@@ -152,7 +155,10 @@ class ProjectModal extends Component
             return redirect()->route('projects');
         }
         else{
-            $this->emit('alert', "You can't delete a project that already has phases assigned", route('projects'));
+            $this->emit('alert', [
+                'message' => trans("You can't delete a project that already has phases assigned"), 
+                'route' => route('projects')
+            ]);
         }
     }
 }

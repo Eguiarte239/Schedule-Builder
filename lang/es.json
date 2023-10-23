@@ -677,5 +677,16 @@
     "of October": "de Octubre",
     "of November": "de Noviembre",
     "of December": "de Diciembre",
-    "Be careful!": "¡Ten cuidado!"
+    "Be careful!": "¡Ten cuidado!",
+    "Be careful": "Ten cuidado",
+    "Language": "Idioma",
+    "Change language": "Cambiar idioma",
+    "Responsible": "Responsable",
+    "Once you save your project, its start and end date, and the leader project won't be able to be changed. Its hour estimate can only be changed to a lower value as long as it has no assigned phases": "Una vez que guardes tu proyecto, su fecha de inicio y finalización, el proyecto líder no se podrá cambiar. Su estimación de horas solo se puede cambiar a un valor menor siempre y cuando no tenga fases asignadas",
+    "You can't delete a project that already has phases assigned": "No se puede eliminar un proyecto que ya tiene fases asignadas",
+    "Once you save your phase, its start and end date, and the project won't be able to be changed": "Una vez que guardes tu fase, su fecha de inicio y finalización, el proyecto no podrá cambiarse",
+    "You can't delete a phase that already has tasks assigned": "No puedes eliminar una fase que ya tiene tareas asignadas",
+    "Once you save your task, its start and end date won't be able to be changed": "Una vez que guardes tu tarea, su fecha de inicio y finalización no se podrá cambiar",
+    "You can't uncheck a task which is predecessor of another until you uncheck that one": "No puedes desmarcar una tarea que es predecesora de otra hasta que desmarques esa",
+    "You can't delete a task which is a predecessor of another": "No puedes eliminar una tarea que es predecesora de otra"
 }

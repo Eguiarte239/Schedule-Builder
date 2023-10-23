@@ -29,29 +29,29 @@
         <p class="mb-3 text-lg text-gray-800 md:text-base dark:text-white">
             {{ $task->content }}
             <br>
-                Responsible: {{ $task->user->name }}
+                {{__('Responsible')}}: {{ $task->user->name }}
             <br>
             @if($task->predecessor_task != null)
-                Predecessor task: {{ $task->predecessorTask->title }}
+                {{__('Predecessor task')}}: {{ $task->predecessorTask->title }}
             @else
-                Predecessor task: NA
+                {{__('Predecessor task')}}: {{__('Not Applicable')}}
             @endif
             <br>
             @if ($task->priority == 'Low')
                 <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                    {{ $task->priority }}
+                    {{ __($task->priority) }}
                 </span>
             @elseif ($task->priority == 'Medium')
                 <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                    {{ $task->priority }}
+                    {{ __($task->priority) }}
                 </span>
             @elseif ($task->priority == 'High')
                 <span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-orange-900 dark:text-yellow-300">
-                    {{ $task->priority }}
+                    {{ __($task->priority) }}
                 </span>
             @else
                 <span class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                    {{ $task->priority }}
+                    {{ __($task->priority) }}
                 </span>
             @endif
         </p>

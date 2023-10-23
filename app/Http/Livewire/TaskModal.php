@@ -108,7 +108,10 @@ class TaskModal extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
-        $this->emit('new-task-alert', "Once you save your task, its start and end date won't be able to be changed");
+        $this->emit('new-task-alert', [
+            'title' => trans("Be careful"),
+            'message' => trans("Once you save your task, its start and end date won't be able to be changed")
+        ]);
     }
 
     public function saveTask()
@@ -172,7 +175,10 @@ class TaskModal extends Component
         $hasPredecessor = Task::where('predecessor_task', $id)->exists();
         if ($hasPredecessor)
         {
-            $this->emit('alert', "You can't delete a task which is a predecessor of another", route('tasks'));
+            $this->emit('alert', [
+                'message' => trans("You can't delete a task which is a predecessor of another"), 
+                'route' => route('tasks')
+            ]);
         } 
         else
         {

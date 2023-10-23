@@ -86,7 +86,10 @@ class PhaseModal extends Component
         $this->resetValidation();
         $this->editModal = false;
         $this->openModal = true;
-        $this->emit('new-phase-alert', "Once you save your phase, its start and end date, and the project won't be able to be changed");
+        $this->emit('new-phase-alert', [
+            'title' => trans("Be careful"),
+            'message' => trans("Once you save your phase, its start and end date, and the project won't be able to be changed"),
+        ]);
     }
 
     public function savePhase()
@@ -135,7 +138,10 @@ class PhaseModal extends Component
             return redirect()->route('phases');
         }
         else{
-            $this->emit('alert', "You can't delete a phase that already has tasks assigned", route('phases'));
+            $this->emit('alert', [
+                'message' => trans("You can't delete a phase that already has tasks assigned"), 
+                'route' => route('phases')
+            ]);
         }
     }
 }
