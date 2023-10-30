@@ -42,7 +42,7 @@ class TaskNotFinished extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mails.task-not-finished',
+            markdown: 'mails.task-not-finished',
         );
     }
 

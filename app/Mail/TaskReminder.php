@@ -42,7 +42,7 @@ class TaskReminder extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mails.task-reminder'
+            markdown: 'mails.task-reminder'
         );
     }
 
