@@ -689,5 +689,6 @@
     "Once you save your task, its start and end date won't be able to be changed": "Una vez que guardes tu tarea, su fecha de inicio y finalización no se podrá cambiar",
     "You can't uncheck a task which is predecessor of another until you uncheck that one": "No puedes desmarcar una tarea que es predecesora de otra hasta que desmarques esa",
     "You can't delete a task which is a predecessor of another": "No puedes eliminar una tarea que es predecesora de otra",
-    "Routes": "Rutas"
+    "Routes": "Rutas",
+    "Assistance": "Asistencia"
 }

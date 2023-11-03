@@ -151,7 +151,6 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
 
         @include('routes')
-        @include('language')
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
@@ -168,61 +167,88 @@
             </div>
 
             <div class="mt-3 space-y-1">
+               <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="flex items-center px-4">
+                        <div>
+                            <div class="font-medium text-base text-gray-800 dark:text-white">{{__('Language')}}</div>
+                        </div>
+                    </div>
+                    <!-- Account Language -->
+                    <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" :active="app()->isLocale('en')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('en') }}}">
+                        {{ __('EN') }}
+                    </x-jet-responsive-nav-link>
+                    
+                    <x-jet-responsive-nav-link href="{{ route('locale', 'es') }}" :active="app()->isLocale('es')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('es') }}}">
+                        {{ __('ES') }}
+                    </x-jet-responsive-nav-link>
+                    
+                    <x-jet-responsive-nav-link href="{{ route('locale', 'fr') }}" :active="app()->isLocale('fr')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('fr') }}}">
+                        {{ __('FR') }}
+                    </x-jet-responsive-nav-link>
+               </div>
+
                 <!-- Account Management -->
-                <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')" x-bind:class="{'dark:text-white'}">
-                    {{ __('Profile') }}
-                </x-jet-responsive-nav-link>
-
-                <x-jet-responsive-nav-link wire:click="$emit('open-help')" class="cursor-pointer">
-                    {{__('How to use Schedule-Assistant')}}
-                </x-jet-responsive-nav-link>
-
-                @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                    <x-jet-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')" x-bind:class="{'dark:text-white'}">
-                        {{ __('API Tokens') }}
-                    </x-jet-responsive-nav-link>
-                @endif
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}" x-data>
-                    @csrf
-
-                    <x-jet-responsive-nav-link href="{{ route('logout') }}"
-                                   @click.prevent="$root.submit();" class="dark:text-white">
-                        {{ __('Log Out') }}
-                    </x-jet-responsive-nav-link>
-                </form>
-
-                <!-- Team Management -->
-                @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                    <div class="border-t border-gray-200"></div>
-
-                    <div class="block px-4 py-2 text-xs text-gray-400">
-                        {{ __('Manage Team') }}
+                <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="flex items-center px-4">
+                        <div>
+                            <div class="font-medium text-base text-gray-800 dark:text-white">{{__('Assistance')}}</div>
+                        </div>
                     </div>
-
-                    <!-- Team Settings -->
-                    <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
-                        {{ __('Team Settings') }}
+                    <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')" x-bind:class="{'dark:text-white':{{ !request()->routeIs('profile.show') }}}">
+                        {{ __('Profile') }}
                     </x-jet-responsive-nav-link>
-
-                    @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                        <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
-                            {{ __('Create New Team') }}
+                    
+                    <x-jet-responsive-nav-link wire:click="$emit('open-help')" class="dark:text-white cursor-pointer">
+                        {{__('How to use Schedule-Assistant')}}
+                    </x-jet-responsive-nav-link>
+                    
+                    @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
+                        <x-jet-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')" x-bind:class="{'dark:text-white'}">
+                            {{ __('API Tokens') }}
                         </x-jet-responsive-nav-link>
-                    @endcan
-
-                    <div class="border-t border-gray-200"></div>
-
-                    <!-- Team Switcher -->
-                    <div class="block px-4 py-2 text-xs text-gray-400">
-                        {{ __('Switch Teams') }}
-                    </div>
-
-                    @foreach (Auth::user()->allTeams() as $team)
-                        <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
-                    @endforeach
-                @endif
+                    @endif
+                    
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}" x-data>
+                        @csrf
+                    
+                        <x-jet-responsive-nav-link href="{{ route('logout') }}"
+                                       @click.prevent="$root.submit();" class="dark:text-white">
+                            {{ __('Log Out') }}
+                        </x-jet-responsive-nav-link>
+                    </form>
+                    
+                    <!-- Team Management -->
+                    @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
+                        <div class="border-t border-gray-200"></div>
+                    
+                        <div class="block px-4 py-2 text-xs text-gray-400">
+                            {{ __('Manage Team') }}
+                        </div>
+                    
+                        <!-- Team Settings -->
+                        <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}" :active="request()->routeIs('teams.show')">
+                            {{ __('Team Settings') }}
+                        </x-jet-responsive-nav-link>
+                    
+                        @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
+                            <x-jet-responsive-nav-link href="{{ route('teams.create') }}" :active="request()->routeIs('teams.create')">
+                                {{ __('Create New Team') }}
+                            </x-jet-responsive-nav-link>
+                        @endcan
+                    
+                        <div class="border-t border-gray-200"></div>
+                    
+                        <!-- Team Switcher -->
+                        <div class="block px-4 py-2 text-xs text-gray-400">
+                            {{ __('Switch Teams') }}
+                        </div>
+                    
+                        @foreach (Auth::user()->allTeams() as $team)
+                            <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                        @endforeach
+                    @endif
+                </div>
             </div>
         </div>
     </div>
