@@ -42,7 +42,7 @@ class TaskFinishedLate extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mails.task-finished-late',
+            markdown: 'mails.task-finished-late',
         );
     }
 
