@@ -149,8 +149,6 @@
     </div>
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
-
-        @include('routes')
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
@@ -167,13 +165,32 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <!-- Routes -->
+                <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="flex items-center px-4">
+                        <div>
+                            <div class="font-medium text-base text-gray-800 dark:text-white">{{__('Routes')}}</div>
+                        </div>
+                    </div>
+                    <x-jet-responsive-nav-link href="{{ route('projects') }}" :active="request()->routeIs('projects')" x-bind:class="{'dark:text-white':{{ !request()->routeIs('projects') }}}">
+                        {{ __('Projects') }}
+                    </x-jet-responsive-nav-link>
+    
+                    <x-jet-responsive-nav-link href="{{ route('phases') }}" :active="request()->routeIs('phases')" x-bind:class="{'dark:text-white':{{ !request()->routeIs('phases') }}}">
+                        {{ __('Phases') }}
+                    </x-jet-responsive-nav-link>
+    
+                    <x-jet-responsive-nav-link href="{{ route('tasks') }}" :active="request()->routeIs('tasks')" x-bind:class="{'dark:text-white':{{ !request()->routeIs('tasks') }}}">
+                        {{ __('Tasks') }}
+                    </x-jet-responsive-nav-link>
+               </div>
+                <!-- Account Language -->
                <div class="pt-4 pb-1 border-t border-gray-200">
                     <div class="flex items-center px-4">
                         <div>
                             <div class="font-medium text-base text-gray-800 dark:text-white">{{__('Language')}}</div>
                         </div>
                     </div>
-                    <!-- Account Language -->
                     <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" :active="app()->isLocale('en')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('en') }}}">
                         {{ __('EN') }}
                     </x-jet-responsive-nav-link>
