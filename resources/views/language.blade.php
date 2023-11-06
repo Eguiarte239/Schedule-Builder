@@ -41,32 +41,4 @@
             </svg>
         </button>
     </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="flex items-center px-4">
-                <div>
-                    <div class="font-medium text-base text-gray-800 dark:text-white">{{ __('Change language') }}</div>
-                </div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <!-- Account Management -->
-                <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" class="dark:text-white">
-                    {{ __('EN') }}
-                </x-jet-responsive-nav-link>
-
-                <x-jet-responsive-nav-link href="{{ route('locale', 'es') }}" class="dark:text-white">
-                    {{ __('ES') }}
-                </x-jet-responsive-nav-link>
-
-                <x-jet-responsive-nav-link href="{{ route('locale', 'fr') }}" class="dark:text-white">
-                    {{ __('FR') }}
-                </x-jet-responsive-nav-link>
-            </div>
-        </div>
-    </div>
 </div>
