@@ -1,9 +1,9 @@
 @component('mail::message')
-# <center>Task finished</center>
+# <center>{{__('Task finished')}}</center>
 
-Hello {{ $task->leader->name }}. One of the tasks you've assigned has been completed late.
-{{ $task->title }} from {{ $task->project->title }}
+{{__('Hello')}}, {{ $task->leader->name }}. {{__("One of the tasks you've assigned has been completed late")}}.
+{{ $task->title }} {{__('from')}} {{ $task->project->title }}.
 
-Thanks,<br>
+{{__('Thanks')}},<br>
 {{ config('app.name') }}
 @endcomponent

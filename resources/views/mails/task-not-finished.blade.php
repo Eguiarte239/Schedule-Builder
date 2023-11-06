@@ -1,10 +1,10 @@
 @component('mail::message')
-# <center>Task not finished</center>
+# <center>{{__('Task not finished')}}</center>
 
-Hello {{ $task->user->name }}. The due date of one of your tasks has passed.
-{{ $task->title }} with due date: {{ $task->getEndTaskAttribute() }}
-Please complete and mark as "finished" your task as soon as possible.
+{{__('Hello')}}, {{ $task->user->name }}. {{__('The due date of one of your tasks has passed')}}.
+{{ $task->title }} {{__('with due date')}}: {{ $task->getEndTaskAttribute() }}
+{{__('Please complete and mark as finished your task as soon as possible')}}.
 
-Thanks,<br>
+{{__('Thanks')}},<br>
 {{ config('app.name') }}
 @endcomponent

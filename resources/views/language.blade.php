@@ -19,14 +19,17 @@
                 </div>
         
                 <x-jet-dropdown-link href="{{ route('locale', 'en') }}">
+                    <span class="fi fi-us mr-2"></span>
                     {{ __('EN') }}
                 </x-jet-dropdown-link>
         
                 <x-jet-dropdown-link href="{{ route('locale', 'es') }}">
+                    <span class="fi fi-mx mr-2"></span>
                     {{ __('ES') }}
                 </x-jet-dropdown-link>
         
                 <x-jet-dropdown-link href="{{ route('locale', 'fr') }}">
+                    <span class="fi fi-fr mr-2"></span>
                     {{ __('FR') }}
                 </x-jet-dropdown-link>
             </x-slot>
@@ -41,4 +44,34 @@
             </svg>
         </button>
     </div>
+
+    @if (request()->routeIs('login'))
+        <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
+            <!-- Account Language -->
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="flex items-center px-4">
+                    <div>
+                        <div class="font-medium text-base text-gray-800 dark:text-white">{{__('Language')}}</div>
+                    </div>
+                </div>
+                <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" :active="app()->isLocale('en')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('en') }}}">
+                    <span class="fi fi-us mr-2"></span>
+                            
+                    {{ __('EN') }}
+                </x-jet-responsive-nav-link>
+                        
+                <x-jet-responsive-nav-link href="{{ route('locale', 'es') }}" :active="app()->isLocale('es')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('es') }}}">
+                    <span class="fi fi-mx mr-2"></span>
+                            
+                    {{ __('ES') }}
+                </x-jet-responsive-nav-link>
+                        
+                <x-jet-responsive-nav-link href="{{ route('locale', 'fr') }}" :active="app()->isLocale('fr')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('fr') }}}">
+                    <span class="fi fi-fr mr-2"></span>
+                            
+                    {{ __('FR') }}
+                </x-jet-responsive-nav-link>
+            </div>
+        </div>
+    @endif
 </div>

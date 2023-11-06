@@ -1,9 +1,9 @@
 @component('mail::message')
-# <center>Task reminder</center>
+# <center>{{__('Task reminder')}}</center>
 
-Hello {{ $task->user->name }}. The due date of one of your tasks is close.
-{{ $task->title }} with due date: {{ $task->getEndTaskAttribute() }}</p>
+{{__('Hello')}}, {{ $task->user->name }}. {{__('The due date of one of your tasks is close.')}}
+{{ $task->title }} {{__('with due date')}}: {{ $task->getEndTaskAttribute() }}</p>
 
-Thanks,<br>
+{{__('Thanks')}},<br>
 {{ config('app.name') }}
 @endcomponent

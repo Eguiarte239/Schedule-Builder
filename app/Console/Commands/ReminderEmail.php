@@ -34,6 +34,7 @@ class ReminderEmail extends Command
         $tasks = Task::all();
         foreach($tasks as $task){
             if(Carbon::parse($task->end_date)->endOfDay()->diffInDays(Carbon::now()->startOfDay()) == 1 && $task->is_finished == false){
+                app()->setLocale($task->user->locale);
                 Mail::to($task->user->email)->queue(new TaskReminder($task));
             }
         }

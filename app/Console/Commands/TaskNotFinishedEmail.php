@@ -34,6 +34,7 @@ class TaskNotFinishedEmail extends Command
         $tasks = Task::all();
         foreach($tasks as $task){
             if(Carbon::now()->startOfDay()->greaterThan(Carbon::parse($task->end_date)) && $task->is_finished == false){
+                app()->setLocale($task->user->locale);
                 Mail::to($task->user->email)->queue(new TaskNotFinished($task));
             }
         }

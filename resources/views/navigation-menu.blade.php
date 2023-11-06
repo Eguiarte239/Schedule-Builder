@@ -192,14 +192,20 @@
                         </div>
                     </div>
                     <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" :active="app()->isLocale('en')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('en') }}}">
+                        <span class="fi fi-us mr-2"></span>
+                        
                         {{ __('EN') }}
                     </x-jet-responsive-nav-link>
                     
                     <x-jet-responsive-nav-link href="{{ route('locale', 'es') }}" :active="app()->isLocale('es')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('es') }}}">
+                        <span class="fi fi-mx mr-2"></span>
+                        
                         {{ __('ES') }}
                     </x-jet-responsive-nav-link>
                     
                     <x-jet-responsive-nav-link href="{{ route('locale', 'fr') }}" :active="app()->isLocale('fr')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('fr') }}}">
+                        <span class="fi fi-fr mr-2"></span>
+                        
                         {{ __('FR') }}
                     </x-jet-responsive-nav-link>
                </div>

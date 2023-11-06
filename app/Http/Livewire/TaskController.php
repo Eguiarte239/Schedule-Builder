@@ -75,9 +75,11 @@ class TaskController extends Component
         }
         else {
             if($task->is_finished == false && Carbon::now()->greaterThan(Carbon::parse($task->end_date)) && Auth::user()->id == $task->user_id_assigned){
+                app()->setLocale($task->leader->locale);
                 Mail::to($task->leader->email)->queue(new TaskFinishedLate($task));
             } 
             else if($task->is_finished == false && Carbon::now()->lessThan(Carbon::parse($task->end_date)) && Auth::user()->id == $task->user_id_assigned){
+                app()->setLocale($task->leader->locale);
                 Mail::to($task->leader->email)->queue(new TaskFinished($task));
             }
             $task->is_finished = !$task->is_finished;

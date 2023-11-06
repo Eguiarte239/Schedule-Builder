@@ -18,6 +18,7 @@
         @livewireStyles
         <script src="to/prefers-dark.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css"/>
     </head>
     <body class="font-sans antialiased mode-dark">
         <x-jet-banner />
