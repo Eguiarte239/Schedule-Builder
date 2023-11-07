@@ -703,5 +703,7 @@
     "Task finished": "Tarea terminada",
     "One of the tasks you've assigned has been finished": "Una de las tareas que has asignado ha sido terminada",
     "from": "de",
-    "One of the tasks you've assigned has been completed late": "Una de las tareas que has asignado ha sido terminada tarde"
+    "One of the tasks you've assigned has been completed late": "Una de las tareas que has asignado ha sido terminada tarde",
+    "Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "Antes de continuar, ¿podría verificar su dirección de correo electrónico haciendo clic en el enlace que le acabamos de enviar? Si no recibió el correo electrónico, con gusto le enviaremos otro.",
+    "Edit Profile": "Editar Perfil"
 }

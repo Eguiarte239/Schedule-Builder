@@ -20,21 +20,11 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Cookie::has('locale')){
-            App::setLocale(Cookie::get('locale'));
-    
-            // Check if the user is logged in
-            if (Auth::check()) {
-                $user = Auth::user();
-                $user = User::find($user->id);
-    
-                // Check if the user's locale in the database is different from the one in the cookie
-                if ($user->locale != Cookie::get('locale')) {
-                    // Update the user's locale in the database
-                    $user->locale = Cookie::get('locale');
-                    $user->save();
-                }
-            }
+        if(Auth::check()){
+            App::setLocale(Auth::user()->locale);
+        }
+        else{
+            App::setLocale(session()->get('locale'));
         }
         return $next($request);
     }
