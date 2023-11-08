@@ -28,11 +28,11 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         // Verifica si el dominio del correo electrónico no es "alumnos.udg.mx"
-        if (!strpos($input['email'], '@alumnos.udg.mx')) {
+        /*if (!strpos($input['email'], '@alumnos.udg.mx')) {
             throw ValidationException::withMessages([
                 'email' => [('Only institutional emails from Universidad de Guadalajara are allowed.')],
             ])->redirectTo('/register');
-        }
+        }*/
 
         $user = User::create([
             'name' => $input['name'],
