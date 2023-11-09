@@ -15,9 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('reminder:send')->everyMinute();
-        $schedule->command('not_finished:send')->everyMinute();
-        $schedule->command('phases:send')->everyMinute();
+        $schedule->command('reminder:send')->daily();
+        $schedule->command('not_finished:send')->daily();
+        $schedule->command('phases:send')->everyThirtyMinutes();
     }
 
     /**
