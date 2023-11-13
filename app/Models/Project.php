@@ -58,7 +58,8 @@ class Project extends Model
      */
     public function getStartTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->start_date)->format('l jS \of F Y');
+        app()->setLocale(auth()->user()->locale);
+        return ucwords(Carbon::createFromFormat('Y-m-d', $this->start_date)->isoFormat('dddd Do MMMM YYYY'));
     }
 
     /**
@@ -68,6 +69,7 @@ class Project extends Model
      */
     public function getEndTaskAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d', $this->end_date)->format('l jS \of F Y');
+        app()->setLocale(auth()->user()->locale);
+        return ucwords(Carbon::createFromFormat('Y-m-d', $this->end_date)->isoFormat('dddd Do MMMM YYYY'));
     }
 }

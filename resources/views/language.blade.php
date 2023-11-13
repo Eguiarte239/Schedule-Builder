@@ -20,17 +20,42 @@
         
                 <x-jet-dropdown-link href="{{ route('locale', 'en') }}">
                     <span class="fi fi-us mr-2"></span>
-                    {{ __('EN') }}
+                    {{ __('English') }}
                 </x-jet-dropdown-link>
         
                 <x-jet-dropdown-link href="{{ route('locale', 'es') }}">
                     <span class="fi fi-mx mr-2"></span>
-                    {{ __('ES') }}
+                    {{ __('Español') }}
                 </x-jet-dropdown-link>
         
                 <x-jet-dropdown-link href="{{ route('locale', 'fr') }}">
                     <span class="fi fi-fr mr-2"></span>
-                    {{ __('FR') }}
+                    {{ __('Français') }}
+                </x-jet-dropdown-link>
+
+                <x-jet-dropdown-link href="{{ route('locale', 'it') }}">
+                    <span class="fi fi-it mr-2"></span>
+                    {{ __('Italiano') }}
+                </x-jet-dropdown-link>
+
+                <x-jet-dropdown-link href="{{ route('locale', 'pt') }}">
+                    <span class="fi fi-br mr-2"></span>
+                    {{ __('Português') }}
+                </x-jet-dropdown-link>
+
+                <x-jet-dropdown-link href="{{ route('locale', 'de') }}">
+                    <span class="fi fi-de mr-2"></span>
+                    {{ __('Deutsch') }}
+                </x-jet-dropdown-link>
+
+                <x-jet-dropdown-link href="{{ route('locale', 'ja') }}">
+                    <span class="fi fi-jp mr-2"></span>
+                    {{ __('日本語 ') }}
+                </x-jet-dropdown-link>
+
+                <x-jet-dropdown-link href="{{ route('locale', 'zh') }}">
+                    <span class="fi fi-cn mr-2"></span>
+                    {{ __('中文简体') }}
                 </x-jet-dropdown-link>
             </x-slot>
         </x-jet-dropdown>
@@ -45,7 +70,7 @@
         </button>
     </div>
 
-    @if (request()->routeIs('login'))
+
         <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
             <!-- Account Language -->
             <div class="pt-4 pb-1 border-t border-gray-200">
@@ -56,22 +81,52 @@
                 </div>
                 <x-jet-responsive-nav-link href="{{ route('locale', 'en') }}" :active="app()->isLocale('en')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('en') }}}">
                     <span class="fi fi-us mr-2"></span>
-                            
-                    {{ __('EN') }}
+                    
+                    {{ __('English') }}
                 </x-jet-responsive-nav-link>
-                        
+                
                 <x-jet-responsive-nav-link href="{{ route('locale', 'es') }}" :active="app()->isLocale('es')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('es') }}}">
                     <span class="fi fi-mx mr-2"></span>
-                            
-                    {{ __('ES') }}
+                    
+                    {{ __('Español') }}
                 </x-jet-responsive-nav-link>
-                        
+                
                 <x-jet-responsive-nav-link href="{{ route('locale', 'fr') }}" :active="app()->isLocale('fr')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('fr') }}}">
                     <span class="fi fi-fr mr-2"></span>
-                            
-                    {{ __('FR') }}
+                    
+                    {{ __('Français') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('locale', 'it') }}" :active="app()->isLocale('it')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('it') }}}">
+                    <span class="fi fi-it mr-2"></span>
+                    
+                    {{ __('Italiano') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('locale', 'pt') }}" :active="app()->isLocale('pt')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('pt') }}}">
+                    <span class="fi fi-br mr-2"></span>
+                    
+                    {{ __('Português') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('locale', 'de') }}" :active="app()->isLocale('de')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('de') }}}">
+                    <span class="fi fi-de mr-2"></span>
+                    
+                    {{ __('Deutsch') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('locale', 'ja') }}" :active="app()->isLocale('ja')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('ja') }}}">
+                    <span class="fi fi-jp mr-2"></span>
+                    
+                    {{ __('日本語') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('locale', 'zh') }}" :active="app()->isLocale('zh')" x-bind:class="{'dark:text-white':{{ !app()->isLocale('zh') }}}">
+                    <span class="fi fi-cn mr-2"></span>
+                    
+                    {{ __('中文简体') }}
                 </x-jet-responsive-nav-link>
             </div>
         </div>
-    @endif
+
 </div>
