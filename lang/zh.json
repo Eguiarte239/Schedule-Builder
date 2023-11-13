@@ -705,5 +705,10 @@
     "from": "从",
     "One of the tasks you've assigned has been completed late": "您分配的其中一个任务已迟到完成",
     "Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "在继续之前，您可以通过单击我们刚刚发送给您的链接来验证您的电子邮件地址吗？如果您没有收到电子邮件，我们将很乐意再次发送给您。",
-    "Edit Profile": "编辑个人资料"
+    "Edit Profile": "编辑个人资料",
+    "Your question exceed my current capacities. Please try with a simplier question.": "您的问题超出了我的当前能力范围。请尝试更简单的问题。",
+    "It's possible that your question contains something not related to projects, phases, or tasks. Please reformulate your question.": "您的问题可能包含与项目、阶段或任务无关的内容。请重新表达您的问题。",
+    "The question must involve at least projects, phases, or tasks.": "问题必须至少涉及项目、阶段或任务。",
+    "There was an unexpected error. Please try again in a moment or try to reformulate your question.": "发生了意外错误。请稍后重试，或尝试重新表达您的问题。",
+    "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.": "您的问题可能没有答案。如果您认为这是一个错误，请尝试重新表达您的问题。"
 }

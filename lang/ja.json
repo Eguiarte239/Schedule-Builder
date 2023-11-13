@@ -705,5 +705,10 @@
     "from": "から",
     "One of the tasks you've assigned has been completed late": "あなたが割り当てたタスクのうちの1つが遅れて完了しました",
     "Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "続行する前に、メールで送られたリンクをクリックしてメールアドレスを確認できますか？メールが届かなかった場合は、別のメールをお送りいたします。",
-    "Edit Profile": "プロフィールの編集"
+    "Edit Profile": "プロフィールの編集",
+    "Your question exceed my current capacities. Please try with a simplier question.": "おっしゃることは理解できません。もう少し簡単な質問にしてみてください。",
+    "It's possible that your question contains something not related to projects, phases, or tasks. Please reformulate your question.": "プロジェクト、フェーズ、またはタスクと関係のない要素が質問に含まれている可能性があります。質問を再構築してください。",
+    "The question must involve at least projects, phases, or tasks.": "質問には少なくともプロジェクト、フェーズ、またはタスクが関与する必要があります。",
+    "There was an unexpected error. Please try again in a moment or try to reformulate your question.": "予期せぬエラーが発生しました。しばらくしてから再試行するか、質問を再構築してみてください。",
+    "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.": "質問に対する答えがない可能性があります。これが間違いだと考える場合は、質問を再構築してみてください。"
 }

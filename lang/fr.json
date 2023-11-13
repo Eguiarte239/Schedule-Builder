@@ -685,5 +685,10 @@
     "from": "de",
     "One of the tasks you've assigned has been completed late": "L'une des tâches que vous avez assignées a été terminée en retard",
     "Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "Avant de continuer, pourriez-vous vérifier votre adresse e-mail en cliquant sur le lien que nous venons de vous envoyer par e-mail ? Si vous n'avez pas reçu l'e-mail, nous vous en enverrons volontiers un autre.",
-    "Edit Profile": "Editer le profil"
+    "Edit Profile": "Editer le profil",
+    "Your question exceed my current capacities. Please try with a simplier question.": "Votre question dépasse mes capacités actuelles. Veuillez essayer avec une question plus simple.",
+    "It's possible that your question contains something not related to projects, phases, or tasks. Please reformulate your question.": "Il est possible que votre question contienne quelque chose qui n'est pas lié aux projets, aux phases ou aux tâches. Veuillez reformuler votre question.",
+    "The question must involve at least projects, phases, or tasks.": "La question doit impliquer au moins des projets, des phases ou des tâches.",
+    "There was an unexpected error. Please try again in a moment or try to reformulate your question.": "Une erreur inattendue s'est produite. Veuillez réessayer dans un moment ou tenter de reformuler votre question.",
+    "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.": "Il est possible qu'il n'y ait pas de réponse à votre question. Si vous pensez que c'est une erreur, essayez de reformuler votre question."
 }

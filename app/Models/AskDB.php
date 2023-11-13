@@ -32,11 +32,11 @@ class AskDB extends Model
 
         // when query is too complex, return a message
         if(substr_count($query, "JOIN") > 1) {
-            return "Your question exceed my current capacities. Please try with a simplier question.";
+            return trans("Your question exceed my current capacities. Please try with a simplier question.");
         }
 
         if($query === '[]') {
-            return "It's possible that your question contains something not related to projects, phases or tasks. Please reforumalte your question.";
+            return trans("It's possible that your question contains something not related to projects, phases or tasks. Please reformulate your question.");
         }
         foreach($tables as $table) {
             if(Str::contains($query, $table)) {
@@ -45,19 +45,19 @@ class AskDB extends Model
         }
 
         if($table_count == 0 && !Str::contains($query, ["projects", "phases", "tasks", "users"])) {
-            return "The question must involve at least projects, phases or tasks.";
+            return trans("The question must involve at least projects, phases or tasks.");
 
         }
 
         try {
             $result = json_encode(AskDB::getQueryResult($query));
         } catch(PDOException $e){
-            return 'There was an unexpected error. Please try again in a momento or try to reformulate your question.';
+            return trans('There was an unexpected error. Please try again in a moment or try to reformulate your question.');
         }
 
         // when result of executed query is empty, return a message
         if($result === '[]') {
-            return "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.";
+            return trans("It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.");
         }
 
         $prompt = (string) view('prompts.answer', [
