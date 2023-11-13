@@ -19,8 +19,8 @@ class ProjectController extends Component
 
     protected $middleware = ['web', 'livewire:protect'];
 
-    public $ask;
-    public $response;
+    public string $ask;
+    public string $response;
 
     public $search = '';
 
@@ -56,8 +56,7 @@ class ProjectController extends Component
     public function render()
     {
         $projects = $this->projects;
-        $response = $this->response;
-        return view('livewire.project.project', ['projects' => $projects, 'response' => $response])->layout('layouts.app');
+        return view('livewire.project.project', ['projects' => $projects])->layout('layouts.app');
     }
 
     public function askDB(){
