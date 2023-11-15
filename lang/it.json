@@ -707,8 +707,8 @@
     "Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "Prima di continuare, potresti verificare il tuo indirizzo email facendo clic sul link che ti abbiamo appena inviato via email? Se non hai ricevuto l'email, te ne invieremo volentieri un'altra.",
     "Edit Profile": "Modifica Profilo",
     "Your question exceed my current capacities. Please try with a simplier question.": "La tua domanda supera le mie attuali capacità. Per favore, prova con una domanda più semplice.",
-    "It's possible that your question contains something not related to projects, phases, or tasks. Please reformulate your question.": "È possibile che la tua domanda contenga qualcosa che non è correlato a progetti, fasi o compiti. Per favore, riformula la tua domanda.",
-    "The question must involve at least projects, phases, or tasks.": "La domanda deve coinvolgere almeno progetti, fasi o compiti.",
+    "It's possible that your question contains something not related to projects, phases or tasks. Please reformulate your question.": "È possibile che la tua domanda contenga qualcosa che non è correlato a progetti, fasi o compiti. Per favore, riformula la tua domanda.",
+    "The question must involve at least projects, phases or tasks.": "La domanda deve coinvolgere almeno progetti, fasi o compiti.",
     "There was an unexpected error. Please try again in a moment or try to reformulate your question.": "Si è verificato un errore imprevisto. Per favore, riprova tra un momento o cerca di riformulare la tua domanda.",
     "It's possible that there is no answer to your question. If you consider this is a mistake, try to reformulate your question.": "È possibile che non ci sia una risposta alla tua domanda. Se ritieni che sia un errore, prova a riformulare la tua domanda."
 }
