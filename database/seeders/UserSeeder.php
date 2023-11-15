@@ -18,20 +18,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $password = 'password';
+        $password = 'KvLkPmQJAb4itzR';
         $user = User::create([
             'name' => 'Schedule-Admin',
             'email' => 'schedule-admin@schedule-builder.org',
             'password' => Hash::make($password),
         ])->assignRole('jetstream-user', 'admin-user');
-        $user->markEmailAsVerified();
-        Event::dispatch(new Verified($user));
-
-        $user = User::create([
-            'name' => 'employee',
-            'email' => 'employee@example.com',
-            'password' => Hash::make($password),
-        ])->assignRole('jetstream-user', 'employee-user');
         $user->markEmailAsVerified();
         Event::dispatch(new Verified($user));
     }
